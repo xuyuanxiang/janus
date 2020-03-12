@@ -5,6 +5,7 @@ import com.github.xuyuanxiang.janus.exception.*;
 import com.github.xuyuanxiang.janus.model.AlipayBaseResponse;
 import com.github.xuyuanxiang.janus.model.AlipayGetTokenResponse;
 import com.github.xuyuanxiang.janus.model.AlipayGetUserResponse;
+import org.apache.commons.lang3.time.DateFormatUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -48,7 +49,7 @@ class AlipayServiceTest {
         AlipayGetTokenResponse getTokenResponse = new AlipayGetTokenResponse();
         getTokenResponse.setAlipaySystemOauthTokenResponse(tokenResponse);
         ResponseEntity<AlipayGetTokenResponse> responseEntity = new ResponseEntity<>(getTokenResponse, HttpStatus.OK);
-        given(restTemplate.getForEntity("https://openapi.alipay.com/gateway.do?app_id=2018060660309824&charset=UTF-8&code=123&grant_type=authorization_code&method=alipay.system.oauth.token&sign_type=RSA2&timestamp=2020-03-12 17:42:00&version=1.0&sign=blEwTT+O9w40ma7G6houkPTEgfh0VsC8q8xb/NzKMr3GJhyJylgfexGVDeCE7Pty7S4rwCExA5A+Ely/XGr3y20bp/FMrD2ee7SnIODJKCb2vrLqZ/lF4rxz/pF4MOcWcb49zV5WZFa0yXHB7YTN93Gpuk+wSTC3fbOkkLXZoc05G/ObuR44ZqapsG+GzvQJaDwRMW4KvqUpJ0m9VqDznDMPUrx2Yew3xmdqAWxxKKJmh+AOvIHwEwB3KMWMRQk0zymsI3IvBGvWI6wOrVxcEvGDFppcrH/5w8NUCWGG/4h7FVYCJX91v7MpkY+35vXnZ71ag1DSe0SgHdtCI+ruaQ==",
+        given(restTemplate.getForEntity("https://openapi.alipay.com/gateway.do?app_id=2018060660309824&charset=UTF-8&code=123&grant_type=authorization_code&method=alipay.system.oauth.token&sign_type=RSA2&timestamp=" + DateFormatUtils.format(millis, "yyyy-MM-dd HH:mm:ss") + "&version=1.0&sign=blEwTT+O9w40ma7G6houkPTEgfh0VsC8q8xb/NzKMr3GJhyJylgfexGVDeCE7Pty7S4rwCExA5A+Ely/XGr3y20bp/FMrD2ee7SnIODJKCb2vrLqZ/lF4rxz/pF4MOcWcb49zV5WZFa0yXHB7YTN93Gpuk+wSTC3fbOkkLXZoc05G/ObuR44ZqapsG+GzvQJaDwRMW4KvqUpJ0m9VqDznDMPUrx2Yew3xmdqAWxxKKJmh+AOvIHwEwB3KMWMRQk0zymsI3IvBGvWI6wOrVxcEvGDFppcrH/5w8NUCWGG/4h7FVYCJX91v7MpkY+35vXnZ71ag1DSe0SgHdtCI+ruaQ==",
             AlipayGetTokenResponse.class))
             .willReturn(responseEntity);
         AlipayGetTokenResponse.AlipaySystemOauthTokenResponse response = alipayService.getToken("123", millis);
@@ -70,7 +71,7 @@ class AlipayServiceTest {
         AlipayGetUserResponse getUserResponse = new AlipayGetUserResponse();
         getUserResponse.setAlipayUserInfoShareResponse(expectResponse);
         ResponseEntity<AlipayGetUserResponse> responseEntity = new ResponseEntity<>(getUserResponse, HttpStatus.OK);
-        given(restTemplate.getForEntity("https://openapi.alipay.com/gateway.do?app_id=2018060660309824&auth_token=123456&charset=UTF-8&method=alipay.user.info.share&sign_type=RSA2&timestamp=2020-03-12 17:42:00&version=1.0&sign=K3O3hGFBQjYCKW9+aSWjPN1Ft5ZnqlgjR/nojjeYnf0Vo56nUkwMS+s/OlQPZEPbMysMRKH7e0CKLYBZDb9hF8xH3kGraxbOsGZheFnkWFT6bexPIoYlMVHvlOrm+JaDS5lPrFIC/+f3BoTjbgeyMVSGWbr6RBDuK8yfzW6CBmXMYtIht5E6OSLQ8SxJinayK5j9jC0SKyYsDLFiFC5KLE7Env7AJI60JD97YNfp0dpuPCXN9xeXP6PK9i26AHSmRb2gjJKQFq479yPhBxjNNe7ASZDN2eZtN4WcdB7g9O7Zhkr1Sw7l9d0K2EPlqnWMHy8n3zm+QxyjsZ/4W/s7kg==",
+        given(restTemplate.getForEntity("https://openapi.alipay.com/gateway.do?app_id=2018060660309824&auth_token=123456&charset=UTF-8&method=alipay.user.info.share&sign_type=RSA2&timestamp=" + DateFormatUtils.format(millis, "yyyy-MM-dd HH:mm:ss") + "&version=1.0&sign=K3O3hGFBQjYCKW9+aSWjPN1Ft5ZnqlgjR/nojjeYnf0Vo56nUkwMS+s/OlQPZEPbMysMRKH7e0CKLYBZDb9hF8xH3kGraxbOsGZheFnkWFT6bexPIoYlMVHvlOrm+JaDS5lPrFIC/+f3BoTjbgeyMVSGWbr6RBDuK8yfzW6CBmXMYtIht5E6OSLQ8SxJinayK5j9jC0SKyYsDLFiFC5KLE7Env7AJI60JD97YNfp0dpuPCXN9xeXP6PK9i26AHSmRb2gjJKQFq479yPhBxjNNe7ASZDN2eZtN4WcdB7g9O7Zhkr1Sw7l9d0K2EPlqnWMHy8n3zm+QxyjsZ/4W/s7kg==",
             AlipayGetUserResponse.class))
             .willReturn(responseEntity);
         AlipayGetUserResponse.AlipayUserInfoShareResponse actualResponse = alipayService.getUser("123456", millis);
@@ -89,7 +90,7 @@ class AlipayServiceTest {
     void requestFailed() throws Exception {
         long millis = 1584006120220L;
         RestClientException cause = new RestClientException("Connect timeout", new SocketTimeoutException());
-        given(restTemplate.getForEntity("https://openapi.alipay.com/gateway.do?app_id=2018060660309824&charset=UTF-8&code=123&grant_type=authorization_code&method=alipay.system.oauth.token&sign_type=RSA2&timestamp=2020-03-12 17:42:00&version=1.0&sign=blEwTT+O9w40ma7G6houkPTEgfh0VsC8q8xb/NzKMr3GJhyJylgfexGVDeCE7Pty7S4rwCExA5A+Ely/XGr3y20bp/FMrD2ee7SnIODJKCb2vrLqZ/lF4rxz/pF4MOcWcb49zV5WZFa0yXHB7YTN93Gpuk+wSTC3fbOkkLXZoc05G/ObuR44ZqapsG+GzvQJaDwRMW4KvqUpJ0m9VqDznDMPUrx2Yew3xmdqAWxxKKJmh+AOvIHwEwB3KMWMRQk0zymsI3IvBGvWI6wOrVxcEvGDFppcrH/5w8NUCWGG/4h7FVYCJX91v7MpkY+35vXnZ71ag1DSe0SgHdtCI+ruaQ==",
+        given(restTemplate.getForEntity("https://openapi.alipay.com/gateway.do?app_id=2018060660309824&charset=UTF-8&code=123&grant_type=authorization_code&method=alipay.system.oauth.token&sign_type=RSA2&timestamp=" + DateFormatUtils.format(millis, "yyyy-MM-dd HH:mm:ss") + "&version=1.0&sign=blEwTT+O9w40ma7G6houkPTEgfh0VsC8q8xb/NzKMr3GJhyJylgfexGVDeCE7Pty7S4rwCExA5A+Ely/XGr3y20bp/FMrD2ee7SnIODJKCb2vrLqZ/lF4rxz/pF4MOcWcb49zV5WZFa0yXHB7YTN93Gpuk+wSTC3fbOkkLXZoc05G/ObuR44ZqapsG+GzvQJaDwRMW4KvqUpJ0m9VqDznDMPUrx2Yew3xmdqAWxxKKJmh+AOvIHwEwB3KMWMRQk0zymsI3IvBGvWI6wOrVxcEvGDFppcrH/5w8NUCWGG/4h7FVYCJX91v7MpkY+35vXnZ71ag1DSe0SgHdtCI+ruaQ==",
             AlipayGetTokenResponse.class))
             .willThrow(cause);
         try {
@@ -105,7 +106,7 @@ class AlipayServiceTest {
     void responseError() throws Exception {
         long millis = 1584006120220L;
         ResponseEntity<AlipayGetTokenResponse> responseEntity = new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE);
-        given(restTemplate.getForEntity("https://openapi.alipay.com/gateway.do?app_id=2018060660309824&charset=UTF-8&code=123&grant_type=authorization_code&method=alipay.system.oauth.token&sign_type=RSA2&timestamp=2020-03-12 17:42:00&version=1.0&sign=blEwTT+O9w40ma7G6houkPTEgfh0VsC8q8xb/NzKMr3GJhyJylgfexGVDeCE7Pty7S4rwCExA5A+Ely/XGr3y20bp/FMrD2ee7SnIODJKCb2vrLqZ/lF4rxz/pF4MOcWcb49zV5WZFa0yXHB7YTN93Gpuk+wSTC3fbOkkLXZoc05G/ObuR44ZqapsG+GzvQJaDwRMW4KvqUpJ0m9VqDznDMPUrx2Yew3xmdqAWxxKKJmh+AOvIHwEwB3KMWMRQk0zymsI3IvBGvWI6wOrVxcEvGDFppcrH/5w8NUCWGG/4h7FVYCJX91v7MpkY+35vXnZ71ag1DSe0SgHdtCI+ruaQ==",
+        given(restTemplate.getForEntity("https://openapi.alipay.com/gateway.do?app_id=2018060660309824&charset=UTF-8&code=123&grant_type=authorization_code&method=alipay.system.oauth.token&sign_type=RSA2&timestamp=" + DateFormatUtils.format(millis, "yyyy-MM-dd HH:mm:ss") + "&version=1.0&sign=blEwTT+O9w40ma7G6houkPTEgfh0VsC8q8xb/NzKMr3GJhyJylgfexGVDeCE7Pty7S4rwCExA5A+Ely/XGr3y20bp/FMrD2ee7SnIODJKCb2vrLqZ/lF4rxz/pF4MOcWcb49zV5WZFa0yXHB7YTN93Gpuk+wSTC3fbOkkLXZoc05G/ObuR44ZqapsG+GzvQJaDwRMW4KvqUpJ0m9VqDznDMPUrx2Yew3xmdqAWxxKKJmh+AOvIHwEwB3KMWMRQk0zymsI3IvBGvWI6wOrVxcEvGDFppcrH/5w8NUCWGG/4h7FVYCJX91v7MpkY+35vXnZ71ag1DSe0SgHdtCI+ruaQ==",
             AlipayGetTokenResponse.class))
             .willReturn(responseEntity);
         try {
@@ -120,7 +121,7 @@ class AlipayServiceTest {
     @Test
     void emptyResponseBody() throws Exception {
         long millis = 1584006120220L;
-        given(restTemplate.getForEntity("https://openapi.alipay.com/gateway.do?app_id=2018060660309824&charset=UTF-8&code=123&grant_type=authorization_code&method=alipay.system.oauth.token&sign_type=RSA2&timestamp=2020-03-12 17:42:00&version=1.0&sign=blEwTT+O9w40ma7G6houkPTEgfh0VsC8q8xb/NzKMr3GJhyJylgfexGVDeCE7Pty7S4rwCExA5A+Ely/XGr3y20bp/FMrD2ee7SnIODJKCb2vrLqZ/lF4rxz/pF4MOcWcb49zV5WZFa0yXHB7YTN93Gpuk+wSTC3fbOkkLXZoc05G/ObuR44ZqapsG+GzvQJaDwRMW4KvqUpJ0m9VqDznDMPUrx2Yew3xmdqAWxxKKJmh+AOvIHwEwB3KMWMRQk0zymsI3IvBGvWI6wOrVxcEvGDFppcrH/5w8NUCWGG/4h7FVYCJX91v7MpkY+35vXnZ71ag1DSe0SgHdtCI+ruaQ==",
+        given(restTemplate.getForEntity("https://openapi.alipay.com/gateway.do?app_id=2018060660309824&charset=UTF-8&code=123&grant_type=authorization_code&method=alipay.system.oauth.token&sign_type=RSA2&timestamp=" + DateFormatUtils.format(millis, "yyyy-MM-dd HH:mm:ss") + "&version=1.0&sign=blEwTT+O9w40ma7G6houkPTEgfh0VsC8q8xb/NzKMr3GJhyJylgfexGVDeCE7Pty7S4rwCExA5A+Ely/XGr3y20bp/FMrD2ee7SnIODJKCb2vrLqZ/lF4rxz/pF4MOcWcb49zV5WZFa0yXHB7YTN93Gpuk+wSTC3fbOkkLXZoc05G/ObuR44ZqapsG+GzvQJaDwRMW4KvqUpJ0m9VqDznDMPUrx2Yew3xmdqAWxxKKJmh+AOvIHwEwB3KMWMRQk0zymsI3IvBGvWI6wOrVxcEvGDFppcrH/5w8NUCWGG/4h7FVYCJX91v7MpkY+35vXnZ71ag1DSe0SgHdtCI+ruaQ==",
             AlipayGetTokenResponse.class))
             .willReturn(new ResponseEntity<>(HttpStatus.OK));
         try {
@@ -141,7 +142,7 @@ class AlipayServiceTest {
         errorResponse.setSubMsg("系统繁忙");
         AlipayGetTokenResponse response = new AlipayGetTokenResponse();
         response.setErrorResponse(errorResponse);
-        given(restTemplate.getForEntity("https://openapi.alipay.com/gateway.do?app_id=2018060660309824&charset=UTF-8&code=123&grant_type=authorization_code&method=alipay.system.oauth.token&sign_type=RSA2&timestamp=2020-03-12 17:42:00&version=1.0&sign=blEwTT+O9w40ma7G6houkPTEgfh0VsC8q8xb/NzKMr3GJhyJylgfexGVDeCE7Pty7S4rwCExA5A+Ely/XGr3y20bp/FMrD2ee7SnIODJKCb2vrLqZ/lF4rxz/pF4MOcWcb49zV5WZFa0yXHB7YTN93Gpuk+wSTC3fbOkkLXZoc05G/ObuR44ZqapsG+GzvQJaDwRMW4KvqUpJ0m9VqDznDMPUrx2Yew3xmdqAWxxKKJmh+AOvIHwEwB3KMWMRQk0zymsI3IvBGvWI6wOrVxcEvGDFppcrH/5w8NUCWGG/4h7FVYCJX91v7MpkY+35vXnZ71ag1DSe0SgHdtCI+ruaQ==",
+        given(restTemplate.getForEntity("https://openapi.alipay.com/gateway.do?app_id=2018060660309824&charset=UTF-8&code=123&grant_type=authorization_code&method=alipay.system.oauth.token&sign_type=RSA2&timestamp=" + DateFormatUtils.format(millis, "yyyy-MM-dd HH:mm:ss") + "&version=1.0&sign=blEwTT+O9w40ma7G6houkPTEgfh0VsC8q8xb/NzKMr3GJhyJylgfexGVDeCE7Pty7S4rwCExA5A+Ely/XGr3y20bp/FMrD2ee7SnIODJKCb2vrLqZ/lF4rxz/pF4MOcWcb49zV5WZFa0yXHB7YTN93Gpuk+wSTC3fbOkkLXZoc05G/ObuR44ZqapsG+GzvQJaDwRMW4KvqUpJ0m9VqDznDMPUrx2Yew3xmdqAWxxKKJmh+AOvIHwEwB3KMWMRQk0zymsI3IvBGvWI6wOrVxcEvGDFppcrH/5w8NUCWGG/4h7FVYCJX91v7MpkY+35vXnZ71ag1DSe0SgHdtCI+ruaQ==",
             AlipayGetTokenResponse.class))
             .willReturn(new ResponseEntity<>(response, HttpStatus.OK));
         try {
