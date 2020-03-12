@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.DateFormatUtils;
+import org.apache.commons.lang3.time.TimeZones;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.retry.annotation.Retryable;
@@ -20,7 +21,9 @@ import java.security.KeyFactory;
 import java.security.PrivateKey;
 import java.security.Signature;
 import java.security.spec.PKCS8EncodedKeySpec;
+import java.time.ZoneId;
 import java.util.Base64;
+import java.util.TimeZone;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -76,7 +79,8 @@ public class AlipayService {
             properties.getAlipay().getAppId(),
             code,
             properties.getAlipay().getSignType().name(),
-            DateFormatUtils.format(millis, "yyyy-MM-dd HH:mm:ss"));
+            DateFormatUtils.format(millis, "yyyy-MM-dd HH:mm:ss",
+                TimeZone.getTimeZone(properties.getAlipay().getTimeZone())));
     }
 
     private String createApiGetUserContent(String token, long millis) {
@@ -84,7 +88,8 @@ public class AlipayService {
             properties.getAlipay().getAppId(),
             token,
             properties.getAlipay().getSignType().name(),
-            DateFormatUtils.format(millis, "yyyy-MM-dd HH:mm:ss"));
+            DateFormatUtils.format(millis, "yyyy-MM-dd HH:mm:ss",
+                TimeZone.getTimeZone(properties.getAlipay().getTimeZone())));
     }
 
     @SneakyThrows

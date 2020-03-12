@@ -6,9 +6,6 @@ jdk:
   - openjdk11
   - openjdk12
   - openjdk13
-before_script:
-  - echo 'Asia/Shanghai' | sudo tee /etc/timezone
-  - sudo dpkg-reconfigure --frontend noninteractive tzdata
 after_success:
   - bash <(curl -s https://codecov.io/bash)
 branches:

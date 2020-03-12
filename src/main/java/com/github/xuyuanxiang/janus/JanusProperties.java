@@ -85,6 +85,10 @@ public class JanusProperties {
          * 加密方式，可选值：RSA，RSA2。 RSA即："SHA1WithRSA"，RSA2即："SHA256WithRSA"。
          */
         private SignType signType;
+        /**
+         * 计算签名时，格式化timestamp的时区
+         */
+        private String timeZone = "Asia/Shanghai";
 
         public String getAppId() {
             Assert.notNull(appId, "\"janus.alipay.appId\" cannot be null.");
