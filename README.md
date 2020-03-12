@@ -1,16 +1,9 @@
-# Janus家族
+# janus-server-sdk
 
-## janus-server-sdk
+[![codecov](https://codecov.io/gh/xuyuanxiang/janus-server-sdk/branch/master/graph/badge.svg)](https://codecov.io/gh/xuyuanxiang/janus-server-sdk)
+[![Build Status](https://travis-ci.org/xuyuanxiang/janus-server-sdk.svg?branch=master)](https://travis-ci.org/xuyuanxiang/janus-server-sdk)
 
 基于 spring-security 封装的微信和支付宝用户网页授权（OAuth）客户端，项目遵循 spring-boot 自动装配的风格，引入依赖后做一些简单的中间件和授权参数的配置即可。
-
-## janus-cas-server
-
-集成了 janus-server-sdk 的 spring-boot 项目，参照 CAS 协议实现的统一登录服务。
-
-## janus-cas-client
-
-基于 spring-security 封装的 CAS 客户端 SDK，同样遵循自动装配风格，引入依赖即完成与 janus-cas-server 的对接，可以做到：同一个微信/支付宝用户在多个服务中统一登录，统一退出，共享用户信息、会话等等。
 
 ## 目录
 
