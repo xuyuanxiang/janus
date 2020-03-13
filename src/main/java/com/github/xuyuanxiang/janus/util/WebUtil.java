@@ -55,12 +55,13 @@ public class WebUtil {
 
     @SneakyThrows
     public static void sendRedirect(final HttpServletRequest request, final HttpServletResponse response, String location, String error, String errorDescription) {
-        log.info("Redirect: {}", location);
-        redirectStrategy.sendRedirect(request, response, UriComponentsBuilder
+        String target = UriComponentsBuilder
             .fromPath(location)
             .queryParam("error", error)
             .queryParam("error_description", encodeUriComponent(errorDescription))
-            .build().toUriString());
+            .build().toUriString();
+        log.info("Redirect: {}", target);
+        redirectStrategy.sendRedirect(request, response, target);
     }
 
     @SneakyThrows

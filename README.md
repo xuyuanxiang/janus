@@ -6,12 +6,16 @@
 
 基于 spring-security 和 spring-session 封装的微信和支付宝用户网页授权（OAuth）客户端，项目遵循 spring-boot 自动装配的风格，引入依赖后做一些简单的中间件和授权参数的配置即可。
 
+_下文中出现的"宿主项目"一律指代：安装了janus-server-sdk的spring-boot工程。_
+
 ## 目录
 
 + [业务规则](#业务规则)
 + [参数配置](#参数配置)
 + [自定义角色/权限](#自定义角色/权限)
 + [获取当前用户信息](#获取当前用户)
++ [应答方式](#应答方式)
++ [i18n](#i18n)
 + [HTTPS配置](#HTTPS配置)
 
 ## 业务规则
@@ -91,7 +95,7 @@ janus:
     secret: SECRET
 ```
 
-[spring-session](https://spring.io/projects/spring-session)文档中查看更多session存储方式。
+在[spring-session](https://spring.io/projects/spring-session)文档中查看更多session存储方式。
 
 ### 自定义角色/权限
 
@@ -147,6 +151,153 @@ public class MyController {
 属性详见[User类](src/main/java/com/github/xuyuanxiang/janus/model/User.java)。
 
 [JanusAuthentication类](src/main/java/com/github/xuyuanxiang/janus/model/JanusAuthentication.java)储存了access_token及其有效期，创建时间，授权方式等信息。
+
+## 应答方式
+
+**下文中使用`${expression}`来标识具有特定含义的内容，比如：占位符，伪代码等等。**
+
+`User-Agent`必须包含：`MicroMessenger`或者`AlipayClient`，即需要在支付宝或微信客户端中访问网页，否则一律响应：
+
+```yaml
+HTTP/1.1 302 Redirection
+Location: ${janus.fallback-url}?error=UNAUTHORIZED&error_description=${encodeURIComponent(请在支付宝或者微信中访问当前页面)}
+```
+
+可在`application.yml`中配置`janus.fallback-url`自定义路由，缺省值：`/401`:
+
+```yaml
+janus:
+  fallback-url: /401
+```
+
+_宿主项目可在该请求路径下，响应一个对用户友好的HTML页之类的。_
+
+### 首次进入（未授权）时访问任意受保护的路径
+
+支付宝/微信客户端Webview请求：
+
+```yaml
+GET /foo/bar HTTP/1.1
+User-Agent: ${AlipayClient || MicroMessenger}
+Host: ${我是宿主服务域名占位符}
+```
+
+janus-server-sdk响应：
+
+```yaml
+HTTP/1.1 302 Redirectiton
+Location: ${支付宝 || 微信授权URL}
+```
+
+如果请求头`Accept`中带有`application/json`（比如宿主项目前端Ajax请求）：
+
+```yaml
+GET /foo/bar HTTP/1.1
+Accept: application/json;charset=UTF-8
+User-Agent: ${AlipayClient || MicroMessenger}
+Host: ${我是宿主服务域名占位符}
+```
+
+janus-server-sdk则会响应JSON格式数据，而不再跳转到授权URL：
+
+```yaml
+HTTP/1.1 401 Unauthorized
+Content-Type: application/json;charset=UTF-8
+ 
+{
+  "error": "UNAUTHORIZED",
+  "error_description": "请在支付宝或者微信中访问当前页面"
+}
+```
+
+### 用户同意授权，但获取access_token或者拉取用户信息时失败
+
+用户在支付宝或微信授权页面同意授权后，会携带auth_code返回`/oauth/callback`路径，这一路径是写死的，不可配。
+
+janus-server-sdk一旦在`/oauth/callback`路径请求路径中接收到auth_code（支付宝）或者code（微信）参数则会调用支付宝或微信接口获取 access_token，
+
+拿到access_token后，再调支付宝或微信接口通过access_token换取用户信息。
+
+这两个步骤如果失败，会区分异常情况携带错误描述信息引导用户跳转到`janus.failure-url`所配置的路由，缺省值：`/500`。
+
+可在`application.yml`自定义其他值：
+
+```yaml
+janus:
+  failure-url: /500
+```
+
+_宿主项目可在该请求路径下，响应一个对用户友好的HTML错误页之类的。_
+
+请求失败——请求没有打到支付宝或者微信API网关，连接超时，DNS解析异常... ：
+
+```yaml
+HTTP/1.1 302 Redirectiton
+Location: ${janus.failure-url}?error=WECHAT_REQUEST_FAILED&error_description=${encodeURIComponent(微信请求失败，请检查网络连接情况。异常：${0})}
+```
+
+_error_description参数占位符`${0}`为具体的异常，比如：`java.net.SocketTimeoutException: balabla`。_
+
+响应错误——支付宝或者微信API网关响应**非2xx**HTTP状态码，或者接口响应超时：
+
+```yaml
+HTTP/1.1 302 Redirectiton
+Location: ${janus.failure-url}?error=ALIPAY_RESPONSE_ERROR&error_description=${encodeURIComponent(支付宝网关不可用，请稍后重试或联系支付宝客服。响应报文：${0})}
+```
+
+可在`application.yml`中配置请求和响应超时阈值：
+
+```yaml
+janus:
+  connection-timeout: 5s # 请求超时阈值：5秒
+  read-timeout: 1m # 响应超时阈值：1分钟
+```
+
+未知错误——支付宝或者微信响应HTTP 200，但是报文类型不对，或者报文非JSON格式：
+
+```yaml
+HTTP/1.1 302 Redirectiton
+Location: ${janus.failure-url}?error=WECHAT_UNKNOWN_ERROR&error_description=${encodeURIComponent(微信接口返回数据解析失败，可能是未按文档约定返回正确的HTTP报文格式或数据结构)}
+```
+
+正常情况下：
+
++ 支付宝接口应该响应`Content-Type: text/html;Charset=UTF-8`，报文数据为JSON格式。
++ 微信接口应该响`Content-Type: text/plain`，报文数据为JSON格式。
+
+**janus-server-sdk会在请求失败、响应错误、未知错误首次发生后，递增间隔时间最多再重试3次，全都失败才会引导用户返回`janus.failure-url`页面。**
+
+业务异常——支付宝/微信接口请求和响应成功，返回JSON结构体中携带错误信息和错误码。
+
+```text
+HTTP/1.1 302 Redirectiton
+Location: ${janus.failure-url}?error=WECHAT_BUSINESS_EXCEPTION&error_description=${encodeURIComponent(微信授权失败（errcode: ${0}, errmsg: ${1}）)}
+```
+
+```text
+HTTP/1.1 302 Redirectiton
+Location: ${janus.failure-url}?error=ALIPAY_BUSINESS_EXCEPTION&error_description=${encodeURIComponent(支付宝授权失败（code: {0}, msg: {1}, sub_code: {2}, sub_msg: {3}）)}
+```
+
+error_description中的占位符会被替换为支付宝/微信返回的错误码即错误信息。
+
+**janus-server-sdk不会对业务异常进行重试，失败1次即引导用户返回`janus.failure-url`页面。**
+
+## i18n
+
+项目自带简体中文的错误描述（即上文error_description字段）信息：[janus.properties](src/main/resources/janus.properties)。
+
+如需其他语言的文案，可以在宿主项目`resources`目录中存放比如：`janus_en.properties`、`janus_zh_TW.properties`等文件即可。
+
+spring会通过用户代理HTTP请求Header中的Accept-Language字段值自动加载对应的描述信息。
+
+比如，用户默认语言设为英文时，请求会携带：
+
+Accept-Language: en-US,en;q=0.9
+
+默认语言为中文时，请求会携带：
+
+Accept-Language: zh-CN;q=0.8,zh;q=0.7
 
 ## HTTPS配置
 
