@@ -278,7 +278,7 @@ HTTP/1.1 302 Redirectiton
 Location: ${janus.failure-url}?error=ALIPAY_BUSINESS_EXCEPTION&error_description=${encodeURIComponent(支付宝授权失败（code: {0}, msg: {1}, sub_code: {2}, sub_msg: {3}）)}
 ```
 
-error_description 中的占位符会被替换为支付宝/微信返回的错误码即错误信息。
+error_description 中的占位符会被替换为支付宝/微信返回的错误码及错误信息。
 
 **janus-server-sdk 不会对业务异常进行重试，失败 1 次即引导用户返回`janus.failure-url`页面。**
 
