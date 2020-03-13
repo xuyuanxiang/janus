@@ -1,14 +1,15 @@
 plugins {
-    id 'java'
-    id 'jacoco'
-    id 'maven-publish'
-    id 'org.springframework.boot' version '2.2.5.RELEASE'
+    id "java"
+    id "jacoco"
+    id "maven-publish"
+    id "org.springframework.boot" version "2.2.5.RELEASE"
+    id "com.jfrog.bintray" version "1.7.3"
 }
 
-apply plugin: 'io.spring.dependency-management'
+apply plugin: "io.spring.dependency-management"
 
-group 'com.github.xuyuanxiang'
-version '1.0-SNAPSHOT'
+group "com.github.xuyuanxiang"
+version "1.0.0"
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -21,38 +22,38 @@ bootJar {
 }
 
 compileJava {
-    options.encoding = 'UTF-8'
+    options.encoding = "UTF-8"
 }
 
 compileTestJava {
-    options.encoding = 'UTF-8'
+    options.encoding = "UTF-8"
 }
 
 repositories {
-    maven { url 'https://maven.aliyun.com/repository/public/' }
-    maven { url 'https://maven.aliyun.com/repository/spring/' }
+    maven { url "https://maven.aliyun.com/repository/public/" }
+    maven { url "https://maven.aliyun.com/repository/spring/" }
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-security'
-    implementation 'org.springframework.session:spring-session-core'
-    implementation 'org.springframework.retry:spring-retry'
+    implementation "org.springframework.boot:spring-boot-starter-web"
+    implementation "org.springframework.boot:spring-boot-starter-security"
+    implementation "org.springframework.session:spring-session-core"
+    implementation "org.springframework.retry:spring-retry"
 
-    implementation 'org.apache.commons:commons-lang3'
+    implementation "org.apache.commons:commons-lang3"
 
-    compileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
-    compileOnly 'org.springframework.boot:spring-boot-configuration-processor'
-    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+    compileOnly "org.projectlombok:lombok"
+    annotationProcessor "org.projectlombok:lombok"
+    compileOnly "org.springframework.boot:spring-boot-configuration-processor"
+    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 
-    testCompile 'org.springframework.boot:spring-boot-starter-test'
-    testCompile 'org.springframework.security:spring-security-test'
-    testCompile group: 'junit', name: 'junit', version: '4.12'
-    testCompileOnly 'org.projectlombok:lombok'
-    testAnnotationProcessor 'org.projectlombok:lombok'
-    testCompileOnly 'org.springframework.boot:spring-boot-configuration-processor'
-    testAnnotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+    testCompile "org.springframework.boot:spring-boot-starter-test"
+    testCompile "org.springframework.security:spring-security-test"
+    testCompile group: "junit", name: "junit", version: "4.12"
+    testCompileOnly "org.projectlombok:lombok"
+    testAnnotationProcessor "org.projectlombok:lombok"
+    testCompileOnly "org.springframework.boot:spring-boot-configuration-processor"
+    testAnnotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 }
 
 
@@ -68,3 +69,75 @@ jacocoTestReport {
 }
 
 check.dependsOn jacocoTestReport
+
+def pomConfig = {
+    licenses {
+        license {
+            name "MIT License"
+            url "http://opensource.org/licenses/MIT"
+            distribution "repo"
+        }
+    }
+    inceptionYear 2020
+    developers {
+        developer {
+            name "xuyuanxiang"
+            email "hi@xuyuanxiang.cn"
+            timezone "+8"
+        }
+    }
+
+    scm {
+        tag "master"
+        url "git@github.com:xuyuanxiang/janus-server-sdk.git"
+        connection "scm:git:git@github.com:xuyuanxiang/janus-server-sdk.git"
+        developerConnection "scm:git:git@github.com:xuyuanxiang/janus-server-sdk.git"
+    }
+}
+
+publishing {
+    publications {
+        JanusPublications(MavenPublication) {
+            from components.java
+            groupId project.group
+            artifactId "janus-server-sdk"
+            version project.version
+            pom.withXml {
+                def root = asNode()
+                root.appendNode('description', '基于 spring-security 封装的微信和支付宝用户网页授权（OAuth）客户端，项目遵循 spring-boot 自动装配的风格，引入依赖后做一些简单的中间件和授权参数的配置即可。')
+                root.appendNode('name', 'janus-server-sdk')
+                root.appendNode('url', 'https://github.com/xuyuanxiang/janus-server-sdk')
+                root.children().last() + pomConfig
+            }
+        }
+    }
+}
+
+bintray {
+    user = "xuyuanxiang"
+    key = System.getenv("BINTRAY_KEY")
+    pkg {
+        repo = "maven"
+        name = "janus-server-sdk"
+        userOrg = "freeman"
+        licenses = ["MIT"]
+        githubRepo = "xuyuanxiang/janus-server-sdk"
+        githubReleaseNotesFile = "CHANGELOG.md"
+        issueTrackerUrl = "https://github.com/xuyuanxiang/janus-server-sdk/issues"
+        vcsUrl = "git@github.com:xuyuanxiang/janus-server-sdk.git"
+        labels = ["wechat", "alipay", "wechat-oauth", "alipay-oauth", "java", "spring-boot", "spring-security"]
+        publicDownloadNumbers = true
+        version {
+            gpg {
+                sign = true
+            }
+            name = project.version
+            vcsTag = project.version
+            released = new Date()
+        }
+    }
+}
+
+bintrayUpload {
+    dependsOn "publishToMavenLocal"
+}
