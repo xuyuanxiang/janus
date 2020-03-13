@@ -15,6 +15,7 @@ _下文提及的"宿主项目"一律指代：安装了 janus-server-sdk 的 spri
 ## 目录
 
 - [业务规则](#业务规则)
+- [安装依赖](#安装依赖)
 - [参数配置](#参数配置)
 - [自定义角色/权限](#自定义角色/权限)
 - [获取当前用户信息](#获取当前用户)
@@ -22,6 +23,7 @@ _下文提及的"宿主项目"一律指代：安装了 janus-server-sdk 的 spri
 - [i18n](#i18n)
 - [HTTPS](#HTTPS)
 - [Janus](#Janus)
+
 
 ## 业务规则
 
@@ -42,12 +44,12 @@ _下文提及的"宿主项目"一律指代：安装了 janus-server-sdk 的 spri
 
 #### 异常类型
 
-+ 系统异常：最多重试3次
++ 系统异常：
     - 请求失败：请求未能打到支付宝/微信网关，可能是：连接超时、DSN解析异常、网络故障...
     - 响应错误：支付宝/微信接口返回非2xx HTTP状态、接口响应超时
     - 未知异常：支付宝/微信接口异常，未按文档约定返回正确的HTTP报文
     - 内部错误：中间件不可用
-+ 业务异常：不可重试异常
++ 业务异常：
     - 微信接口返回错误码、错误信息
     - 支付宝接口返回错误码、错误信息
 
@@ -68,6 +70,73 @@ janus:
 
 
 [应答方式](#应答方式)和[i18n](#i18n)章节中，有更多关于异常的描述。
+
+## 安装依赖
+
+### Gradle
+
+```groovy
+repositories {
+    maven {
+        url  "https://freeman.bintray.com/janus" 
+    }
+}
+
+dependencies {
+    implementation 'com.github.xuyuanxiang:janus-server-sdk:1.0.0'
+}
+```
+
+### Maven
+
+settings.xml:
+
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<settings xsi:schemaLocation='http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd'
+          xmlns='http://maven.apache.org/SETTINGS/1.0.0' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
+    
+    <profiles>
+        <profile>
+            <repositories>
+                <repository>
+                    <snapshots>
+                        <enabled>false</enabled>
+                    </snapshots>
+                    <id>bintray-freeman-janus</id>
+                    <name>bintray</name>
+                    <url>https://freeman.bintray.com/janus</url>
+                </repository>
+            </repositories>
+            <pluginRepositories>
+                <pluginRepository>
+                    <snapshots>
+                        <enabled>false</enabled>
+                    </snapshots>
+                    <id>bintray-freeman-janus</id>
+                    <name>bintray-plugins</name>
+                    <url>https://freeman.bintray.com/janus</url>
+                </pluginRepository>
+            </pluginRepositories>
+            <id>bintray</id>
+        </profile>
+    </profiles>
+    <activeProfiles>
+        <activeProfile>bintray</activeProfile>
+    </activeProfiles>
+</settings>
+```
+
+pom.xml:
+
+```xml
+<dependency>
+  <groupId>com.github.xuyuanxiang</groupId>
+  <artifactId>janus-server-sdk</artifactId>
+  <version>1.0.0</version>
+  <type>pom</type>
+</dependency>
+```
 
 ## 参数配置
 
