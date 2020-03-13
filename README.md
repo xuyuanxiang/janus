@@ -1,6 +1,6 @@
 # janus-server-sdk
 
-[![Download](https://api.bintray.com/packages/freeman/janus-server-sdk/com.github.xuyuanxiang%3Ajanus-server-sdk/images/download.svg) ](https://bintray.com/freeman/janus-server-sdk/com.github.xuyuanxiang%3Ajanus-server-sdk/_latestVersion) [![codecov](https://codecov.io/gh/xuyuanxiang/janus-server-sdk/branch/master/graph/badge.svg)](https://codecov.io/gh/xuyuanxiang/janus-server-sdk) [![Build Status](https://travis-ci.org/xuyuanxiang/janus-server-sdk.svg?branch=master)](https://travis-ci.org/xuyuanxiang/janus-server-sdk)
+[ ![Download](https://api.bintray.com/packages/freeman/janus/com.github.xuyuanxiang%3Ajanus-server-sdk/images/download.svg) ](https://bintray.com/freeman/janus/com.github.xuyuanxiang%3Ajanus-server-sdk/_latestVersion) [![codecov](https://codecov.io/gh/xuyuanxiang/janus-server-sdk/branch/master/graph/badge.svg)](https://codecov.io/gh/xuyuanxiang/janus-server-sdk) [![Build Status](https://travis-ci.org/xuyuanxiang/janus-server-sdk.svg?branch=master)](https://travis-ci.org/xuyuanxiang/janus-server-sdk)
 
 基于 spring-security 和 spring-session 封装的微信和支付宝用户网页授权（OAuth）客户端，项目遵循 spring-boot 自动装配的风格，引入依赖后做一些简单的中间件和授权参数的配置即可。
 
