@@ -103,7 +103,7 @@ publishing {
             version project.version
             pom.withXml {
                 def root = asNode()
-                root.appendNode('description', '基于 spring-security 封装的微信和支付宝用户网页授权（OAuth）客户端，项目遵循 spring-boot 自动装配的风格，引入依赖后做一些简单的中间件和授权参数的配置即可。')
+                root.appendNode('description', '支付宝、微信聚合OAuth网页授权客户端')
                 root.appendNode('name', 'janus-server-sdk')
                 root.appendNode('url', 'https://github.com/xuyuanxiang/janus-server-sdk')
                 root.children().last() + pomConfig
