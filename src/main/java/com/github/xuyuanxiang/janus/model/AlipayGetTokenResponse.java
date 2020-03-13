@@ -2,13 +2,14 @@ package com.github.xuyuanxiang.janus.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-@Data
-@EqualsAndHashCode(callSuper = false)
+@Getter
+@Setter
 public class AlipayGetTokenResponse extends AlipayBaseResponse {
     private AlipaySystemOauthTokenResponse alipaySystemOauthTokenResponse;
 

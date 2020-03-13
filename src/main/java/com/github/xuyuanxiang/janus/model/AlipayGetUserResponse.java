@@ -1,15 +1,16 @@
 package com.github.xuyuanxiang.janus.model;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 /**
  * @see <a href="https://docs.open.alipay.com/api_2/alipay.user.info.share">alipay.user.info.share</a>
  */
-@Data
-@EqualsAndHashCode(callSuper = false)
+@Getter
+@Setter
 public class AlipayGetUserResponse extends AlipayBaseResponse {
     private AlipayUserInfoShareResponse alipayUserInfoShareResponse;
 

@@ -2,6 +2,7 @@ package com.github.xuyuanxiang.janus.web;
 
 import com.github.xuyuanxiang.janus.model.*;
 import com.github.xuyuanxiang.janus.service.WechatService;
+import com.github.xuyuanxiang.janus.util.WebUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -81,5 +82,12 @@ class WechatOAuthCallbackFilterTest {
                 .build(), "ACCESS_TOKEN",
                 "REFRESH_TOKEN", JanusAuthentication.Credentials.WECHAT, Duration.ofSeconds(7200), "SCOPE")))
             .andExpect(redirectedUrl("/"));
+    }
+
+    @Test
+    void rejectionCallback() throws Exception {
+        mvc.perform(get("/oauth/callback").header("User-Agent", MOCK_UA))
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrl("/403?error=FORBIDDEN&error_description=" + WebUtil.encodeUriComponent("您没有权限访问当前页面")));
     }
 }

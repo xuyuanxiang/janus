@@ -47,7 +47,7 @@ _下文中出现的"宿主项目"一律指代：安装了 janus-server-sdk 的 s
 
 #### 功能页
 
-在 application.yml 中配置一下参数：
+在 application.yml 中自定义以下参数：
 
 ```yaml
 janus:
@@ -58,10 +58,10 @@ janus:
   logout-success-url: /logout/success
 ```
 
-**以上均为缺省值，可自定义为其他值。宿主项目可以在对应路由下返回一个对用户友好的HTML错误页。**
+**以上均为缺省值。宿主项目可以在对应路由下返回一个对用户友好的HTML错误页。**
 
 
-_[应答方式](#应答方式)和[i18n](#i18n)章节中，有更多关于异常的描述。_
+[应答方式](#应答方式)和[i18n](#i18n)章节中，有更多关于异常的描述。
 
 ## 参数配置
 
@@ -138,7 +138,7 @@ janus:
 
 ### 自定义角色/权限
 
-默认情况下，用户使用支付宝或微信在未登录情况下访问任意路径，都会跳转到相应的授权页面，待用户同意授权后会返回未登录前所访问的路径。
+默认情况下，用户使用支付宝或微信在未授权情况下访问任意路径，都会跳转到相应的授权页面，待用户同意授权后会返回未登录前所访问的路径。
 
 注入一个 Bean 实现自定义：
 
@@ -257,7 +257,9 @@ janus-server-sdk 一旦在`/oauth/callback`请求路径中接收到 auth_code（
 
 拿到 access_token 后，再调支付宝或微信接口通过 access_token 换取用户信息。
 
-这两个步骤如果失败，会区分异常情况携带错误描述信息引导用户跳转到`janus.failure-url`所配置的路由，缺省值：`/500`。
+#### 系统异常
+
+系统异常，会携带错误描述信息引导用户跳转到`janus.failure-url`所配置的路由，缺省值：`/500`。
 
 可在`application.yml`自定义其他值：
 
@@ -268,7 +270,9 @@ janus:
 
 _宿主项目可在该请求路径下，响应一个对用户友好的 HTML 错误页之类的。_
 
-请求失败——请求没有打到支付宝或者微信 API 网关，连接超时，DNS 解析异常... ：
+系统异常细分下列 4 种情况:
+
+1. 请求失败——请求没有打到支付宝或者微信 API 网关，连接超时，DNS 解析异常... ：
 
 ```yaml
 HTTP/1.1 302 Redirectiton
@@ -277,7 +281,7 @@ Location: ${janus.failure-url}?error=WECHAT_REQUEST_FAILED&error_description=${e
 
 _error_description 参数占位符`${0}`为具体的异常，比如：`java.net.SocketTimeoutException: balabla`。_
 
-响应错误——支付宝或者微信 API 网关响应**非 2xx**HTTP 状态码，或者接口响应超时：
+2. 响应错误——支付宝或者微信 API 网关响应**非 2xx**HTTP 状态码，或者接口响应超时：
 
 ```yaml
 HTTP/1.1 302 Redirectiton
@@ -292,7 +296,7 @@ janus:
   read-timeout: 1m # 响应超时阈值：1分钟
 ```
 
-未知错误——支付宝或者微信响应 HTTP 200，但是报文类型不对，或者报文非 JSON 格式：
+3. 未知错误——支付宝或者微信响应 HTTP 200，但是报文类型不对，或者报文非 JSON 格式：
 
 ```yaml
 HTTP/1.1 302 Redirectiton
@@ -304,23 +308,36 @@ Location: ${janus.failure-url}?error=WECHAT_UNKNOWN_ERROR&error_description=${en
 - 支付宝接口应该响应`Content-Type: text/html;Charset=UTF-8`，报文数据为 JSON 格式。
 - 微信接口应该响`Content-Type: text/plain`，报文数据为 JSON 格式。
 
-**janus-server-sdk 会在请求失败、响应错误、未知错误首次发生后，递增间隔时间最多再重试 3 次，全都失败才会引导用户返回`janus.failure-url`页面。**
+4. 内部错误——中间件（比如：redis）不可用
 
-业务异常——支付宝/微信接口请求和响应成功，返回 JSON 结构体中携带错误信息和错误码。
+**janus-server-sdk 会在系统错误首次发生后，递增间隔时间最多再重试 3 次，全都失败才会引导用户返回`janus.failure-url`页面。**
+
+#### 业务异常
+
+支付宝/微信接口请求和响应成功，返回 JSON 结构体中携带错误信息和错误码。
 
 ```text
 HTTP/1.1 302 Redirectiton
-Location: ${janus.failure-url}?error=WECHAT_BUSINESS_EXCEPTION&error_description=${encodeURIComponent(微信授权失败（errcode: ${0}, errmsg: ${1}）)}
+Location: ${janus.denied-url}?error=WECHAT_BUSINESS_EXCEPTION&error_description=${encodeURIComponent(微信授权失败（errcode: ${0}, errmsg: ${1}）)}
 ```
 
 ```text
 HTTP/1.1 302 Redirectiton
-Location: ${janus.failure-url}?error=ALIPAY_BUSINESS_EXCEPTION&error_description=${encodeURIComponent(支付宝授权失败（code: {0}, msg: {1}, sub_code: {2}, sub_msg: {3}）)}
+Location: ${janus.denied-url}?error=ALIPAY_BUSINESS_EXCEPTION&error_description=${encodeURIComponent(支付宝授权失败（code: {0}, msg: {1}, sub_code: {2}, sub_msg: {3}）)}
 ```
 
-error_description 中的占位符会被替换为支付宝/微信返回的错误码及错误信息。
+error_description 中的占位符会被替换为支付宝/微信返回的错误码及错误信息字段值。
 
-**janus-server-sdk 不会对业务异常进行重试，失败 1 次即引导用户返回`janus.failure-url`页面。**
+**janus-server-sdk 不会对业务异常进行重试，失败 1 次即引导用户返回`janus.denied-url`页面，缺省值：`/403`。**
+
+可在`application.yml`自定义其他值：
+
+```yaml
+janus:
+  denied-url: /403
+```
+
+_宿主项目可在该请求路径下，响应一个对用户友好的 HTML 错误页之类的。_
 
 ## i18n
 

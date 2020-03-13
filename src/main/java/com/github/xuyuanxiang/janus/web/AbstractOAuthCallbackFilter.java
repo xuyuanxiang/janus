@@ -1,7 +1,9 @@
 package com.github.xuyuanxiang.janus.web;
 
 import com.github.xuyuanxiang.janus.JanusProperties;
+import com.github.xuyuanxiang.janus.exception.AlipayBusinessException;
 import com.github.xuyuanxiang.janus.exception.AuthenticationExceptionWithCode;
+import com.github.xuyuanxiang.janus.exception.WechatBusinessException;
 import com.github.xuyuanxiang.janus.model.JanusAuthentication;
 import com.github.xuyuanxiang.janus.service.JanusMessageSource;
 import com.github.xuyuanxiang.janus.service.UserAgentRequestMatcher;
@@ -56,9 +58,12 @@ public abstract class AbstractOAuthCallbackFilter extends GenericFilter {
                     WebUtil.sendRedirect(request, response, properties.getDeniedUrl(), code, message);
                 }
             }
-        } catch (AuthenticationExceptionWithCode ex) {
+        } catch (AuthenticationException ex) {
             requestCache.removeRequest(request, response);
             failureHandler.onAuthenticationFailure(request, response, ex);
+        } catch (Throwable throwable) {
+            requestCache.removeRequest(request, response);
+            failureHandler.onAuthenticationFailure(request, response, new AuthenticationExceptionWithCode(throwable));
         } finally {
             if (!response.isCommitted()) {
                 chain.doFilter(request, response);
@@ -80,16 +85,22 @@ public abstract class AbstractOAuthCallbackFilter extends GenericFilter {
         @Override
         public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
             String code;
-            String description = exception.getMessage();
+            String url = properties.getFailureUrl();
+            String description;
             if (exception instanceof AuthenticationExceptionWithCode) {
                 AuthenticationExceptionWithCode ex = (AuthenticationExceptionWithCode) exception;
                 code = ex.getCode().name();
                 description = JanusMessageSource.INSTANCE.getMessage(ex.getCode().name(), ex.getArgs(), request.getLocale());
+                if (exception instanceof AlipayBusinessException || exception instanceof WechatBusinessException) {
+                    url = properties.getDeniedUrl();
+                }
             } else {
-                code = AuthenticationExceptionWithCode.ErrorCode.INTERNAL_SERVER_ERROR.name();
+                code = AuthenticationExceptionWithCode.ErrorCode.FORBIDDEN.name();
+                description = JanusMessageSource.INSTANCE.getMessage(code, null, request.getLocale());
+                url = properties.getDeniedUrl();
             }
             log.error("Authentication failed: ", exception);
-            WebUtil.sendRedirect(request, response, properties.getFailureUrl(), code, description);
+            WebUtil.sendRedirect(request, response, url, code, description);
         }
     }
 }

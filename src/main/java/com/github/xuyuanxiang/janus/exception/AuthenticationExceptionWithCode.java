@@ -29,4 +29,10 @@ public class AuthenticationExceptionWithCode extends AuthenticationException {
         this.code = code;
         this.args = args;
     }
+
+    public AuthenticationExceptionWithCode(Throwable cause) {
+        super(ErrorCode.INTERNAL_SERVER_ERROR.name());
+        this.code = ErrorCode.INTERNAL_SERVER_ERROR;
+        this.args = new Object[]{cause};
+    }
 }

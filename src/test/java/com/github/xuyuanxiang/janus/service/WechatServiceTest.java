@@ -142,7 +142,7 @@ class WechatServiceTest {
             fail("WechatBusinessException should be raised");
         } catch (WechatBusinessException ex) {
             assertEquals(ex.getCode(), AuthenticationExceptionWithCode.ErrorCode.WECHAT_BUSINESS_EXCEPTION);
-            assertEquals(ex.getArgs()[0], 40003);
+            assertEquals(ex.getArgs()[0], "40003");
             assertEquals(ex.getArgs()[1], "invalid openid");
         }
     }
