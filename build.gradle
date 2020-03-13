@@ -117,7 +117,7 @@ bintray {
     key = System.getenv("BINTRAY_KEY")
     publications = ['JanusPublications']
     pkg {
-        repo = "janus-server-sdk"
+        repo = "janus"
         name = "com.github.xuyuanxiang:janus-server-sdk"
         userOrg = "freeman"
         licenses = ["MIT"]
