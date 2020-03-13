@@ -213,7 +213,7 @@ Content-Type: application/json;charset=UTF-8
 
 用户在支付宝或微信授权页面同意授权后，会携带 auth_code 返回`/oauth/callback`路径，这一路径是写死的，不可配。
 
-janus-server-sdk 一旦在`/oauth/callback`路径请求路径中接收到 auth_code（支付宝）或者 code（微信）参数则会调用支付宝或微信接口获取 access_token，
+janus-server-sdk 一旦在`/oauth/callback`请求路径中接收到 auth_code（支付宝）或者 code（微信）参数则会调用支付宝或微信接口获取 access_token，
 
 拿到 access_token 后，再调支付宝或微信接口通过 access_token 换取用户信息。
 
@@ -286,7 +286,7 @@ error_description 中的占位符会被替换为支付宝/微信返回的错误�
 
 项目自带简体中文的错误描述（即上文 error_description 字段）信息：[janus.properties](src/main/resources/janus.properties)。
 
-其中的key即错误码（上文的error字段），`${}`占位符会替换为实际运行时的内容。
+其中的 key 即错误码（上文的 error 字段），`${}`占位符会替换为实际运行时的内容。
 
 ```properties
 INTERNAL_SERVER_ERROR=系统错误：${ExceptionUtils.getRootCause(throwable).toString()}
