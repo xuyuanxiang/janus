@@ -6,6 +6,7 @@ import com.github.xuyuanxiang.janus.model.AlipayGetUserResponse;
 import com.github.xuyuanxiang.janus.model.JanusAuthentication;
 import com.github.xuyuanxiang.janus.model.User;
 import com.github.xuyuanxiang.janus.service.AlipayService;
+import com.github.xuyuanxiang.janus.service.UserAgentRequestMatcher;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.security.core.Authentication;
@@ -20,7 +21,7 @@ public class AlipayOAuthCallbackFilter extends AbstractOAuthCallbackFilter {
     private final AlipayService alipayService;
 
     public AlipayOAuthCallbackFilter(JanusProperties properties, AlipayService alipayService) {
-        super(properties);
+        super(UserAgentRequestMatcher.alipay, properties);
         this.alipayService = alipayService;
     }
 

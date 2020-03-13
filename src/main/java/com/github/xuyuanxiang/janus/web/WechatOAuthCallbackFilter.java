@@ -5,6 +5,7 @@ import com.github.xuyuanxiang.janus.model.JanusAuthentication;
 import com.github.xuyuanxiang.janus.model.User;
 import com.github.xuyuanxiang.janus.model.WechatGetTokenResponse;
 import com.github.xuyuanxiang.janus.model.WechatGetUserResponse;
+import com.github.xuyuanxiang.janus.service.UserAgentRequestMatcher;
 import com.github.xuyuanxiang.janus.service.WechatService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.Authentication;
@@ -19,7 +20,7 @@ public class WechatOAuthCallbackFilter extends AbstractOAuthCallbackFilter {
     private final WechatService wechatService;
 
     public WechatOAuthCallbackFilter(JanusProperties properties, WechatService wechatService) {
-        super(properties);
+        super(UserAgentRequestMatcher.wechat, properties);
         this.wechatService = wechatService;
     }
 

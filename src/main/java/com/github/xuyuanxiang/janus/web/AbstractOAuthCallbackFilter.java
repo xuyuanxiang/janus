@@ -4,6 +4,7 @@ import com.github.xuyuanxiang.janus.JanusProperties;
 import com.github.xuyuanxiang.janus.exception.AuthenticationExceptionWithCode;
 import com.github.xuyuanxiang.janus.model.JanusAuthentication;
 import com.github.xuyuanxiang.janus.service.JanusMessageSource;
+import com.github.xuyuanxiang.janus.service.UserAgentRequestMatcher;
 import com.github.xuyuanxiang.janus.util.WebUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -30,6 +31,7 @@ public abstract class AbstractOAuthCallbackFilter extends GenericFilter {
 
     private final RequestMatcher callbackMatcher = new AntPathRequestMatcher(JanusProperties.OAUTH_CALLBACK_URL, "GET");
     private RequestCache requestCache = new HttpSessionRequestCache();
+    protected final UserAgentRequestMatcher userAgentRequestMatcher;
     protected final JanusProperties properties;
 
     @Setter
@@ -42,16 +44,16 @@ public abstract class AbstractOAuthCallbackFilter extends GenericFilter {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
         try {
-            if (callbackMatcher.matches(request)) {
+            if (callbackMatcher.matches(request) && userAgentRequestMatcher.matches(request)) {
                 log.info("Handle callback: {}", request.getRequestURI());
                 Authentication authentication = handleCallback(request, response);
                 if (authentication != null) {
                     handleSuccess(request, response, authentication);
                 } else {
+                    requestCache.removeRequest(request, response);
                     String code = AuthenticationExceptionWithCode.ErrorCode.FORBIDDEN.name();
                     String message = JanusMessageSource.INSTANCE.getMessage(code, null, request.getLocale());
                     WebUtil.sendRedirect(request, response, properties.getDeniedUrl(), code, message);
-                    requestCache.removeRequest(request, response);
                 }
             }
         } catch (AuthenticationExceptionWithCode ex) {
