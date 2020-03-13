@@ -1,9 +1,12 @@
 # janus-server-sdk
 
-[![spring-boot](https://img.shields.io/badge/Spring%20Boot-2.2.5.RELEASE-brightgreen.svg)](https://docs.spring.io/spring-boot/docs/2.2.5.RELEASE/reference/html/) 
+[![MIT](https://img.shields.io/github/license/xuyuanxiang/janus-server-sdk?style=plastic)](https://github.com/xuyuanxiang/janus-server-sdk/blob/master/LICENSE) 
 [![Download](https://api.bintray.com/packages/freeman/janus/com.github.xuyuanxiang%3Ajanus-server-sdk/images/download.svg)](https://bintray.com/freeman/janus/com.github.xuyuanxiang%3Ajanus-server-sdk/_latestVersion) 
 [![codecov](https://codecov.io/gh/xuyuanxiang/janus-server-sdk/branch/master/graph/badge.svg)](https://codecov.io/gh/xuyuanxiang/janus-server-sdk) 
-[![Build Status](https://travis-ci.org/xuyuanxiang/janus-server-sdk.svg?branch=master)](https://travis-ci.org/xuyuanxiang/janus-server-sdk)
+[![Build Status](https://travis-ci.org/xuyuanxiang/janus-server-sdk.svg?branch=master)](https://travis-ci.org/xuyuanxiang/janus-server-sdk) 
+[![spring-boot](https://img.shields.io/badge/Spring%20Boot-2.2.5.RELEASE-brightgreen.svg)](https://docs.spring.io/spring-boot/docs/2.2.5.RELEASE/reference/html/) 
+[![spring-security](https://img.shields.io/badge/Spring%20Security-5.2.2.RELEASE-brightgreen.svg)](https://docs.spring.io/spring-security/site/docs/5.2.2.RELEASE/reference/html5) 
+[![spring-session](https://img.shields.io/badge/Spring%20Session-2.2.1.RELEASE-brightgreen.svg)](https://docs.spring.io/spring-session/docs/2.2.1.RELEASE/reference/html/) 
 
 基于 spring-security 和 spring-session 封装的微信和支付宝用户网页授权（OAuth）客户端，项目遵循 spring-boot 自动装配的风格，引入依赖后做一些简单的中间件和授权参数的配置即可。
 
@@ -137,7 +140,7 @@ janus:
     secret: SECRET
 ```
 
-在[spring-session](https://spring.io/projects/spring-session)文档中查看更多 session 存储方式。
+在[spring-session](https://docs.spring.io/spring-session/docs/2.2.1.RELEASE/reference/html/)文档中查看更多 session 存储方式。
 
 ### 自定义角色/权限
 
@@ -166,8 +169,8 @@ public class MyConfiguration {
 
 spring-security 文档中有详细的使用方式：
 
-- [Expression-Based Access Control](https://docs.spring.io/spring-security/site/docs/current/reference/html5/#el-access)
-- 除了上面代码示例中的方式，还可以使用[Method Security](https://docs.spring.io/spring-security/site/docs/current/reference/html5/#jc-method)
+- [Expression-Based Access Control](https://docs.spring.io/spring-security/site/docs/5.2.2.RELEASE/reference/html5/#el-access)
+- 除了上面代码示例中的方式，还可以使用[Method Security](https://docs.spring.io/spring-security/site/docs/5.2.2.RELEASE/reference/html5/#jc-method)
 
 ### 获取当前用户
 
