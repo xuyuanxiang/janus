@@ -1,5 +1,6 @@
 # janus-server-sdk
 
+[ ![Download](https://api.bintray.com/packages/freeman/janus-server-sdk/com.github.xuyuanxiang%3Ajanus-server-sdk/images/download.svg) ](https://bintray.com/freeman/janus-server-sdk/com.github.xuyuanxiang%3Ajanus-server-sdk/_latestVersion)
 [![codecov](https://codecov.io/gh/xuyuanxiang/janus-server-sdk/branch/master/graph/badge.svg)](https://codecov.io/gh/xuyuanxiang/janus-server-sdk)
 [![Build Status](https://travis-ci.org/xuyuanxiang/janus-server-sdk.svg?branch=master)](https://travis-ci.org/xuyuanxiang/janus-server-sdk)
 
@@ -86,18 +87,4 @@ X-Forwarded-Ssl: on
 
 ![](doc/slb.png)
 
-然后参照[stackoverflow类似的解决方案](https://stackoverflow.com/questions/51404552/spring-boot-oauth-always-redirecting-to-http-ibm-cloud-cf-spring-boot-2)，注入：
-
-```java
-@Bean
-FilterRegistrationBean<ForwardedHeaderFilter> forwardedHeaderFilter() {
-
-    final FilterRegistrationBean<ForwardedHeaderFilter> filterRegistrationBean = new FilterRegistrationBean<ForwardedHeaderFilter>();
-
-    filterRegistrationBean.setFilter(new ForwardedHeaderFilter());
-    filterRegistrationBean.setOrder(Ordered.HIGHEST_PRECEDENCE);
-
-    return filterRegistrationBean;
-}
-```
-
+然后参照[stackoverflow类似的解决方案](https://stackoverflow.com/questions/51404552/spring-boot-oauth-always-redirecting-to-http-ibm-cloud-cf-spring-boot-2)。
