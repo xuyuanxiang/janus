@@ -79,6 +79,6 @@ class AlipayOAuthCallbackFilterTest {
     void rejectionCallback() throws Exception {
         mvc.perform(get("/oauth/callback").header("User-Agent", MOCK_UA))
             .andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrl("/401?error=FORBIDDEN&error_description=" + WebUtil.encodeUriComponent("您没有权限访问当前页面")));
+            .andExpect(redirectedUrl("/403?error=FORBIDDEN&error_description=" + WebUtil.encodeUriComponent("您没有权限访问当前页面")));
     }
 }
