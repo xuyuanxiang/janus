@@ -341,9 +341,9 @@ _宿主项目可在该请求路径下，响应一个对用户友好的 HTML 错�
 
 ## i18n
 
-项目自带简体中文的错误描述（即上文 error_description 字段）信息：[janus.properties](src/main/resources/janus.properties)。
+项目自带简体中文的错误描述（即上文 error_description 字段）：[janus.properties](src/main/resources/janus.properties)。
 
-其中的 key 即错误码（上文的 error 字段），`${}`占位符会替换为实际运行时的内容。
+其中的 key 即上文的 error 字段，`${}`占位符会替换为实际运行时的内容。
 
 ```properties
 INTERNAL_SERVER_ERROR=系统错误：${ExceptionUtils.getRootCause(throwable).toString()}
@@ -363,13 +363,13 @@ UNAUTHORIZED=请在支付宝或者微信中访问当前页面
 
 通过用户代理 HTTP 请求 Header 中的 Accept-Language 字段值匹配对应语言的描述信息。
 
-比如，用户默认语言设为英文时，请求会携带：
+比如，用户默认语言设为英文时，用户代理发送请求时通常会携带：
 
-Accept-Language: en-US,en;q=0.9
+Accept-Language: en-US,en;
 
-默认语言为中文时，请求会携带：
+默认语言为中文时，用户代理发送请求时通常会携带：
 
-Accept-Language: zh-CN;q=0.8,zh;q=0.7
+Accept-Language: zh-CN;
 
 ## HTTPS
 
