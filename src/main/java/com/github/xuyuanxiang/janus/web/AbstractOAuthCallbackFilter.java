@@ -8,18 +8,14 @@ import com.github.xuyuanxiang.janus.util.WebUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.MessageSource;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
-import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
-import org.springframework.security.web.savedrequest.RequestCache;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -33,7 +29,6 @@ public abstract class AbstractOAuthCallbackFilter extends GenericFilter {
     private final RequestMatcher callbackMatcher = new AntPathRequestMatcher(JanusProperties.OAUTH_CALLBACK_URL, "GET");
     protected final JanusProperties properties;
 
-    private MessageSource messageSource = new JanusMessageSource();
     @Setter
     protected AuthenticationSuccessHandler successHandler = new SavedRequestAwareAuthenticationSuccessHandler();
     @Setter
@@ -75,22 +70,16 @@ public abstract class AbstractOAuthCallbackFilter extends GenericFilter {
         @Override
         public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
             String code;
-            String message = exception.getMessage();
+            String description = exception.getMessage();
             if (exception instanceof AuthenticationExceptionWithCode) {
                 AuthenticationExceptionWithCode ex = (AuthenticationExceptionWithCode) exception;
                 code = ex.getCode().name();
-                message = messageSource.getMessage(ex.getCode().name(), ex.getArgs(), request.getLocale());
+                description = JanusMessageSource.INSTANCE.getMessage(ex.getCode().name(), ex.getArgs(), request.getLocale());
             } else {
                 code = AuthenticationExceptionWithCode.ErrorCode.INTERNAL_SERVER_ERROR.name();
             }
             log.error("Authentication failed: ", exception);
-            WebUtil.sendRedirect(request, response, UriComponentsBuilder
-                .fromUriString(properties.getFailureUrl())
-                .queryParam("code", code)
-                .queryParam("message", WebUtil.encodeUriComponent(message))
-                .build()
-                .toUriString()
-            );
+            WebUtil.sendRedirect(request, response, properties.getFailureUrl(), code, description);
         }
     }
 }

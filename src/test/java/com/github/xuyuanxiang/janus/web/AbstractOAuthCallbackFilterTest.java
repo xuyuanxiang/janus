@@ -58,7 +58,7 @@ class AbstractOAuthCallbackFilterTest {
             .willThrow(exception);
         mvc.perform(get("/oauth/callback?auth_code=123").header("User-Agent", AlipayOAuthCallbackFilterTest.MOCK_UA))
             .andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrl("/error?code=ALIPAY_REQUEST_FAILED&message="
+            .andExpect(redirectedUrl("/error?error=ALIPAY_REQUEST_FAILED&error_description="
                 + WebUtil.encodeUriComponent("支付宝请求失败，请检查网络连接情况。异常：" + ExceptionUtils.getRootCause(cause))));
     }
 

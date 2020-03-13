@@ -2,6 +2,7 @@ package com.github.xuyuanxiang.janus.util;
 
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.security.web.DefaultRedirectStrategy;
@@ -27,12 +28,22 @@ public class WebUtil {
     }
 
     @SneakyThrows
-    public static void renderJSON(final HttpServletResponse response, String code, String message) {
+    public static void renderJSON(final HttpServletResponse response, HttpStatus status, String error, String errorDescription) {
+        response.setStatus(status.value());
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        response.setCharacterEncoding("UTF-8");
+        final PrintWriter out = response.getWriter();
+        out.print("{\"error\":\"" + error + "\",\"error_description\":\"" + errorDescription + "\"}");
+        out.flush();
+    }
+
+    @SneakyThrows
+    public static void renderJSON(final HttpServletResponse response) {
         response.setStatus(200);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding("UTF-8");
         final PrintWriter out = response.getWriter();
-        out.print("{\"code\":\"" + code + "\",\"message\":\"" + message + "\"}");
+        out.print("{}");
         out.flush();
     }
 
@@ -43,10 +54,13 @@ public class WebUtil {
     }
 
     @SneakyThrows
-    public static void sendRedirect(final HttpServletRequest request, final HttpServletResponse response, String location, String code, String message) {
+    public static void sendRedirect(final HttpServletRequest request, final HttpServletResponse response, String location, String error, String errorDescription) {
         log.info("Redirect: {}", location);
         redirectStrategy.sendRedirect(request, response, UriComponentsBuilder
-            .fromPath(location).queryParam("code", code).queryParam("message", encodeUriComponent(message)).build().toUriString());
+            .fromPath(location)
+            .queryParam("error", error)
+            .queryParam("error_description", encodeUriComponent(errorDescription))
+            .build().toUriString());
     }
 
     @SneakyThrows

@@ -5,12 +5,14 @@ import com.github.xuyuanxiang.janus.model.AlipayGetUserResponse;
 import com.github.xuyuanxiang.janus.model.JanusAuthentication;
 import com.github.xuyuanxiang.janus.model.User;
 import com.github.xuyuanxiang.janus.service.AlipayService;
+import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -25,19 +27,14 @@ import static org.mockito.BDDMockito.*;
 
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)
-@SpringBootTest(value = {
-    "spring.redis.port:5001",
-    "janus.logout-request-url:/logout",
-    "janus.logout-success-url:/logout/result"
-})
+@SpringBootTest
 class AlipayOAuthCallbackFilterTest {
     public static final String MOCK_UA = "Mozilla/5.0 (iPhone; CPU iPhone OS 13_1_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/17A878 ChannelId(3) NebulaSDK/1.8.100112 Nebula WK PSDType(1) AlipayDefined(nt:WIFI,ws:414|832|2.0) AliApp(AP/10.1.80.6060) AlipayClient/10.1.80.6060 Alipay Language/zh-Hans Region/CN";
+    @MockBean
+    AlipayService alipayService;
     @Autowired
     WebApplicationContext context;
     MockMvc mvc;
-
-    @MockBean
-    AlipayService alipayService;
 
     @BeforeEach
     void setup() {
@@ -77,12 +74,5 @@ class AlipayOAuthCallbackFilterTest {
                 .build(), "20120823ac6ffaa4d2d84e7384bf983531473993",
                 "30120823ac6ffdsdf2d84e7384bf983531473994", JanusAuthentication.Credentials.ALIPAY)))
             .andExpect(redirectedUrl("/"));
-    }
-
-    @Test
-    void logout() throws Exception {
-        mvc.perform(get("/logout").header("User-Agent", MOCK_UA))
-            .andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrl("/logout/result"));
     }
 }

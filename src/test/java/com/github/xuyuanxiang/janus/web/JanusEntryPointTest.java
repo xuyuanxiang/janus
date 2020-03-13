@@ -36,8 +36,8 @@ class JanusEntryPointTest {
             .andExpect(redirectedUrl("https://openauth.alipay.com/oauth2/publicAppAuthorize.htm?app_id=2018060660309824&response_type=code&scope=auth_base&redirect_uri=http%3A%2F%2Flocalhost%2Foauth%2Fcallback&state=123"));
 
         mvc.perform(get("/?state=123").header("User-Agent", AlipayOAuthCallbackFilterTest.MOCK_UA).accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andExpect(content().json("{\"code\":\"UNAUTHORIZED\",\"message\":\"请在支付宝或者微信中访问当前页面\"}"));
+            .andExpect(status().isUnauthorized())
+            .andExpect(content().json("{\"error\":\"UNAUTHORIZED\",\"error_description\":\"请在支付宝或者微信中访问当前页面\"}"));
     }
 
     @Test
@@ -47,19 +47,19 @@ class JanusEntryPointTest {
             .andExpect(redirectedUrl("https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx520c15f417810387&redirect_uri=http%3A%2F%2Flocalhost%2Foauth%2Fcallback&response_type=code&scope=snsapi_base&state=456#wechat_redirect"));
 
         mvc.perform(get("/?state=123").header("User-Agent", WechatOAuthCallbackFilterTest.MOCK_UA).accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andExpect(content().json("{\"code\":\"UNAUTHORIZED\",\"message\":\"请在支付宝或者微信中访问当前页面\"}"));
+            .andExpect(status().isUnauthorized())
+            .andExpect(content().json("{\"error\":\"UNAUTHORIZED\",\"error_description\":\"请在支付宝或者微信中访问当前页面\"}"));
     }
 
     @Test
     void unsupported() throws Exception {
         mvc.perform(get("/?state=456"))
             .andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrl("/401?code=UNAUTHORIZED&message=" + URLEncoder.encode("请在支付宝或者微信中访问当前页面", "UTF-8")));
+            .andExpect(redirectedUrl("/401?error=UNAUTHORIZED&error_description=" + URLEncoder.encode("请在支付宝或者微信中访问当前页面", "UTF-8")));
 
         mvc.perform(get("/?state=456").accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andExpect(content().json("{\"code\":\"UNAUTHORIZED\",\"message\":\"请在支付宝或者微信中访问当前页面\"}"));
+            .andExpect(status().isUnauthorized())
+            .andExpect(content().json("{\"error\":\"UNAUTHORIZED\",\"error_description\":\"请在支付宝或者微信中访问当前页面\"}"));
     }
 
 }

@@ -11,7 +11,6 @@ import java.time.Duration;
 public class JanusProperties {
     public static final String ALIPAY_AUTH_URL = "https://openauth.alipay.com/oauth2/publicAppAuthorize.htm?app_id=%s&response_type=code&scope=auth_base&redirect_uri=%s&state=%s";
     public static final String WECHAT_AUTH_URL = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=%s&redirect_uri=%s&response_type=code&scope=snsapi_base&state=%s#wechat_redirect";
-    public static final String SAVED_REQUEST = "JANUS_SAVED_REQUEST";
     public static final String OAUTH_CALLBACK_URL = "/oauth/callback";
 
     /**
@@ -41,7 +40,7 @@ public class JanusProperties {
     /**
      * 【退出登录】成功后，引导用户返回该路由。
      */
-    private String logoutSuccessUrl = "/";
+    private String logoutSuccessUrl = "/logout/success";
     /**
      * 支付宝/微信 接口请求超时时间，缺省值：5秒。超过该时间还未成功建立连接则直接放弃。通常在首次失败后，会最多再重试3次。
      */

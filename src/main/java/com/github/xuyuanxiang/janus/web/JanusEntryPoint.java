@@ -6,7 +6,7 @@ import com.github.xuyuanxiang.janus.service.JanusMessageSource;
 import com.github.xuyuanxiang.janus.service.UserAgentRequestMatcher;
 import com.github.xuyuanxiang.janus.util.WebUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.MessageSource;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -23,7 +23,6 @@ import java.io.IOException;
 public class JanusEntryPoint implements AuthenticationEntryPoint {
 
     private final JanusProperties properties;
-    private MessageSource messageSource = new JanusMessageSource();
     private RequestCache requestCache = new HttpSessionRequestCache();
 
     @Override
@@ -31,8 +30,8 @@ public class JanusEntryPoint implements AuthenticationEntryPoint {
         ServletServerHttpRequest httpRequest = new ServletServerHttpRequest(httpServletRequest);
         if (WebUtil.acceptJson(httpRequest)) {
             String code = AuthenticationExceptionWithCode.ErrorCode.UNAUTHORIZED.name();
-            String message = messageSource.getMessage(code, null, httpServletRequest.getLocale());
-            WebUtil.renderJSON(httpServletResponse, code, message);
+            String description = JanusMessageSource.INSTANCE.getMessage(code, null, httpServletRequest.getLocale());
+            WebUtil.renderJSON(httpServletResponse, HttpStatus.UNAUTHORIZED, code, description);
         } else {
             if (UserAgentRequestMatcher.alipay.matches(httpServletRequest)) {
                 requestCache.saveRequest(httpServletRequest, httpServletResponse);
@@ -42,7 +41,7 @@ public class JanusEntryPoint implements AuthenticationEntryPoint {
                 WebUtil.sendRedirect(httpServletRequest, httpServletResponse, buildRedirectUri(httpServletRequest, JanusProperties.WECHAT_AUTH_URL, properties.getWechat().getAppid()));
             } else {
                 String code = AuthenticationExceptionWithCode.ErrorCode.UNAUTHORIZED.name();
-                String message = messageSource.getMessage(code, null, httpServletRequest.getLocale());
+                String message = JanusMessageSource.INSTANCE.getMessage(code, null, httpServletRequest.getLocale());
                 WebUtil.sendRedirect(httpServletRequest, httpServletResponse, properties.getFallbackUrl(), code, message);
             }
         }

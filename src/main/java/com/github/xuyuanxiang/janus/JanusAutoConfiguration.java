@@ -75,7 +75,7 @@ public class JanusAutoConfiguration extends WebSecurityConfigurerAdapter {
             .accessDeniedHandler(new JanusAccessDeniedHandler(properties))
             .and()
             .authorizeRequests()
-            .antMatchers(properties.getDeniedUrl(), properties.getFailureUrl())
+            .antMatchers(properties.getDeniedUrl(), properties.getFailureUrl(), properties.getLogoutSuccessUrl())
             .permitAll()
             .and()
             .logout()

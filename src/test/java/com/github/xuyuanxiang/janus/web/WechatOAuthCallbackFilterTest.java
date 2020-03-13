@@ -25,12 +25,7 @@ import static org.mockito.BDDMockito.*;
 
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)
-@SpringBootTest(value = {
-    "spring.redis.port:6001",
-    "janus.wechat.app-id:123",
-    "janus.logout-request-url:/logout",
-    "janus.logout-success-url:/logout/result"
-})
+@SpringBootTest
 class WechatOAuthCallbackFilterTest {
     public final static String MOCK_UA = "Mozilla/5.0 (iPhone; CPU iPhone OS 9_3_2 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Mobile/13F69 MicroMessenger/7.0.8(0x17000820) NetType/4G Language/zh_CN miniProgram";
     @Autowired
@@ -87,12 +82,4 @@ class WechatOAuthCallbackFilterTest {
                 "REFRESH_TOKEN", JanusAuthentication.Credentials.WECHAT, Duration.ofSeconds(7200), "SCOPE")))
             .andExpect(redirectedUrl("/"));
     }
-
-    @Test
-    void logout() throws Exception {
-        mvc.perform(get("/logout").header("User-Agent", MOCK_UA))
-            .andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrl("/logout/result"));
-    }
-
 }
