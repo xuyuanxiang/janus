@@ -14,15 +14,54 @@ _下文中出现的"宿主项目"一律指代：安装了 janus-server-sdk 的 s
 - [获取当前用户信息](#获取当前用户)
 - [应答方式](#应答方式)
 - [i18n](#i18n)
-- [HTTPS 配置](#HTTPS配置)
+- [HTTPS](#HTTPS)
 - [Janus](#Janus)
 
 ## 业务规则
 
+### 时序图
+
 ![](doc/sequence.svg)
+
+参考资料：
 
 - [微信用户网页授权](https://mp.weixin.qq.com/wiki?action=doc&id=mp1421140842&t=0.888455262701805)
 - [支付宝用户网页授权](https://docs.open.alipay.com/53/104114)
+
+### 流程图
+
+内部处理逻辑：
+
+![](doc/flow.svg)
+
+#### 异常类型
+
++ 系统异常：最多重试3次
+    - 请求失败：请求未能打到支付宝/微信网关，可能是：连接超时、DSN解析异常、网络故障...
+    - 响应错误：支付宝/微信接口返回非2xx HTTP状态、接口响应超时
+    - 未知异常：支付宝/微信接口异常，未按文档约定返回正确的HTTP报文
+    - 内部错误：中间件不可用
++ 业务异常：不可重试异常
+    - 微信接口返回错误码、错误信息
+    - 支付宝接口返回错误码、错误信息
+
+#### 功能页
+
+在 application.yml 中配置一下参数：
+
+```yaml
+janus:
+  failure-url: /500
+  fallback-url: /401
+  denied-url: /403
+  logout-request-url: /logout
+  logout-success-url: /logout/success
+```
+
+**以上均为缺省值，可自定义为其他值。宿主项目可以在对应路由下返回一个对用户友好的HTML错误页。**
+
+
+_[应答方式](#应答方式)和[i18n](#i18n)章节中，有更多关于异常的描述。_
 
 ## 参数配置
 
@@ -315,7 +354,7 @@ Accept-Language: en-US,en;q=0.9
 
 Accept-Language: zh-CN;q=0.8,zh;q=0.7
 
-## HTTPS 配置
+## HTTPS
 
 使用 Nginx 或云服务（比如：阿里云 SLB）做代理转发时，只要有以下请求头之一：
 
