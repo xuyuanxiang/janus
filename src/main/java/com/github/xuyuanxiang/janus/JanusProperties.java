@@ -57,7 +57,7 @@ public class JanusProperties {
          */
         private String appId;
         /**
-         * 应用证书私钥，支付宝开放平台开发者在本地创建的证书私钥（公钥上传到了支付宝）。
+         * 应用证书私钥，支付宝开放平台开发者在本地生成的证书私钥（公钥上传到了支付宝）。
          */
         private String privateKey;
         /**
@@ -69,7 +69,7 @@ public class JanusProperties {
          */
         private SignType signType;
         /**
-         * 计算签名时，格式化timestamp的时区
+         * 支付宝接口公共必填参数要求格式："yyyy-MM-dd HH:mm:ss"。 格式化时设置时区以避免一些难以预料的问题。
          */
         private String timeZone = "Asia/Shanghai";
 

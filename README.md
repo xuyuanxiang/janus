@@ -140,35 +140,43 @@ pom.xml:
 
 ## 参数配置
 
-application.yml 示例：
+Janus所有参数示例：
 
 ```yaml
-spring:
-  session:
-    timeout: 10m
 janus:
   alipay:
-    app-id: APPID
-    sign-type: RSA2
-    private-key: PRIVATE—KEY
+    app-id: # 必填
+    sign-type: # 必填
+    private-key: # 必填
+    public-key: # 必填
+    time-zone: Asia/Shanghai
   wechat:
-    appid: APPID
-    secret: SECRET
+    appid: # 必填
+    secret: # 必填
+  fallback-url: /401
+  denied-url: /403
+  failure-url: /500
+  logout-success-url: /logout/success
+  logout-request-url: /logout
+  read-timeout: 30s
+  connection-timeout: 2s
 ```
 
-以上是最少配置，其他配置及说明详见：[JanusProperties.java](src/main/java/com/github/xuyuanxiang/janus/JanusProperties.java)注释。
++ 带注释的是必填参数；
++ 已填的是可选参数，不填的情况下等价于上面的缺省值。
+
+安装依赖后在`application.yml`文件中键入：`janus`前缀通过IDE浮窗快速查看属性定义：
+
+![](/doc/floating.png)
+
+或者查看源码注释：[JanusProperties.java](src/main/java/com/github/xuyuanxiang/janus/JanusProperties.java)。
 
 ### 使用 Redis 存储 session
 
-第一步，添加依赖：
+第一步，添加spring依赖：
 
 ```xml
 <dependencies>
-    <dependency>
-        <groupId>com.github.xuyuanxiang</groupId>
-        <artifactId>janus-server-sdk</artifactId>
-        <version>1.0.0</version>
-    </dependency>
     <dependency>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-data-redis</artifactId>
@@ -180,7 +188,7 @@ janus:
 </dependencies>
 ```
 
-第二步，配置连接参数：
+第二步，配置redis连接参数：
 
 ```yaml
 spring:
