@@ -304,7 +304,7 @@ UNAUTHORIZED=请在支付宝或者微信中访问当前页面
 
 如需其他语言的文案，可以在宿主项目`resources`目录中存放比如：`janus_en.properties`、`janus_zh_TW.properties`等文件即可。
 
-spring 会通过用户代理 HTTP 请求 Header 中的 Accept-Language 字段值自动加载对应的描述信息。
+通过用户代理 HTTP 请求 Header 中的 Accept-Language 字段值匹配对应语言的描述信息。
 
 比如，用户默认语言设为英文时，请求会携带：
 
@@ -319,7 +319,7 @@ Accept-Language: zh-CN;q=0.8,zh;q=0.7
 使用 Nginx 或云服务（比如：阿里云 SLB）做代理转发时，只要有以下请求头之一：
 
 ```yaml
-Forwarded: proto=https;host=spa.shouqianba.com
+Forwarded: proto=https;host=${宿主服务域名}
 X-Forwarded-Proto: https
 X-Forwarded-Ssl: on
 ```
