@@ -8,9 +8,9 @@
 [![spring-security](https://img.shields.io/badge/Spring%20Security-5.2.2.RELEASE-brightgreen.svg)](https://docs.spring.io/spring-security/site/docs/5.2.2.RELEASE/reference/html5) 
 [![spring-session](https://img.shields.io/badge/Spring%20Session-2.2.1.RELEASE-brightgreen.svg)](https://docs.spring.io/spring-session/docs/2.2.1.RELEASE/reference/html/) 
 
-基于 spring-security 和 spring-session 封装的微信和支付宝用户网页授权（OAuth）客户端，项目遵循 spring-boot 自动装配的风格，引入依赖后做一些简单的中间件和授权参数的配置即可。
+聚合支付宝、微信用户网页授权（OAuth）客户端。自动装配，只需配置简单的中间件和授权参数即可。
 
-_下文中出现的"宿主项目"一律指代：安装了 janus-server-sdk 的 spring-boot 工程。_
+_下文提及的"宿主项目"一律指代：安装了 janus-server-sdk 的 spring-boot 工程。_
 
 ## 目录
 
