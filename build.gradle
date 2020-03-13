@@ -30,8 +30,7 @@ compileTestJava {
 }
 
 repositories {
-    maven { url "https://maven.aliyun.com/repository/public/" }
-    maven { url "https://maven.aliyun.com/repository/spring/" }
+    mavenCentral()
 }
 
 dependencies {
@@ -116,9 +115,10 @@ publishing {
 bintray {
     user = "xuyuanxiang"
     key = System.getenv("BINTRAY_KEY")
+    publications = ['JanusPublications']
     pkg {
-        repo = "maven"
-        name = "janus-server-sdk"
+        repo = "janus-server-sdk"
+        name = "com.github.xuyuanxiang:janus-server-sdk"
         userOrg = "freeman"
         licenses = ["MIT"]
         githubRepo = "xuyuanxiang/janus-server-sdk"

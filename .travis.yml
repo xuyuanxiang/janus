@@ -1,18 +1,23 @@
 language: java
 jdk:
-  - openjdk8
+- openjdk8
 install: true
 script:
-  - gradle build -i
+- gradle build -i
 after_success:
-  - bash <(curl -s https://codecov.io/bash)
+- bash <(curl -s https://codecov.io/bash)
 branches:
   only:
-    - master
-    - "/^\\d{1}\\.\\d{1,2}.\\d{1,2}$/"
+  - master
+  - "/^\\d{1}\\.\\d{1,2}.\\d{1,2}$/"
+deploy:
+  provider: script
+  script: gradle bintrayUpload
+  on:
+    tags: true
 notifications:
   email:
     recipients:
-      - hi@xuyuanxiang.cn
+    - hi@xuyuanxiang.cn
     on_success: never
     on_failure: always
