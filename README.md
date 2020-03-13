@@ -1,9 +1,10 @@
-# janus-server-sdk
+# janus-server-sdk [![MIT](https://img.shields.io/github/license/xuyuanxiang/janus-server-sdk?style=plastic)](https://github.com/xuyuanxiang/janus-server-sdk/blob/master/LICENSE) 
 
-[![MIT](https://img.shields.io/github/license/xuyuanxiang/janus-server-sdk?style=plastic)](https://github.com/xuyuanxiang/janus-server-sdk/blob/master/LICENSE) 
 [![Download](https://api.bintray.com/packages/freeman/janus/com.github.xuyuanxiang%3Ajanus-server-sdk/images/download.svg)](https://bintray.com/freeman/janus/com.github.xuyuanxiang%3Ajanus-server-sdk/_latestVersion) 
 [![codecov](https://codecov.io/gh/xuyuanxiang/janus-server-sdk/branch/master/graph/badge.svg)](https://codecov.io/gh/xuyuanxiang/janus-server-sdk) 
 [![Build Status](https://travis-ci.org/xuyuanxiang/janus-server-sdk.svg?branch=master)](https://travis-ci.org/xuyuanxiang/janus-server-sdk) 
+
+
 [![spring-boot](https://img.shields.io/badge/Spring%20Boot-2.2.5.RELEASE-brightgreen.svg)](https://docs.spring.io/spring-boot/docs/2.2.5.RELEASE/reference/html/) 
 [![spring-security](https://img.shields.io/badge/Spring%20Security-5.2.2.RELEASE-brightgreen.svg)](https://docs.spring.io/spring-security/site/docs/5.2.2.RELEASE/reference/html5) 
 [![spring-session](https://img.shields.io/badge/Spring%20Session-2.2.1.RELEASE-brightgreen.svg)](https://docs.spring.io/spring-session/docs/2.2.1.RELEASE/reference/html/) 
