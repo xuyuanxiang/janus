@@ -9,8 +9,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.web.authentication.NullRememberMeServices;
-import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter;
 import org.springframework.session.FindByIndexNameSessionRepository;
@@ -55,15 +53,11 @@ public class JanusAutoConfiguration extends WebSecurityConfigurerAdapter {
         } catch (Exception ignored) {
 
         }
-        if (sessionRepository == null) {
-            sessionRepository = new NoopFindByIndexNameSessionRepository();
-        }
 
-        RememberMeServices rememberMeServices;
-        if (properties.isEnableRememberMe()) {
-            rememberMeServices = new JanusRememberMeService(properties);
-        } else {
-            rememberMeServices = new NullRememberMeServices();
+        if (sessionRepository != null) {
+            http.sessionManagement()
+                .maximumSessions(1)
+                .sessionRegistry(new SpringSessionBackedSessionRegistry(sessionRepository));
         }
 
         http
@@ -84,18 +78,13 @@ public class JanusAutoConfiguration extends WebSecurityConfigurerAdapter {
             .antMatchers(properties.getDeniedUrl(), properties.getFailureUrl())
             .permitAll()
             .and()
-            .sessionManagement()
-            .maximumSessions(1)
-            .sessionRegistry(new SpringSessionBackedSessionRegistry(sessionRepository))
-            .and()
-            .and()
             .logout()
             .logoutUrl(properties.getLogoutRequestUrl())
             .logoutSuccessHandler(new JanusLogoutSuccessHandler(properties))
             .and()
-            .addFilterBefore(new WechatOAuthCallbackFilter(properties, rememberMeServices, wechatService),
+            .addFilterBefore(new WechatOAuthCallbackFilter(properties, wechatService),
                 UsernamePasswordAuthenticationFilter.class)
-            .addFilterBefore(new AlipayOAuthCallbackFilter(properties, rememberMeServices, alipayService), WechatOAuthCallbackFilter.class)
+            .addFilterBefore(new AlipayOAuthCallbackFilter(properties, alipayService), WechatOAuthCallbackFilter.class)
         ;
 
         try {

@@ -15,11 +15,10 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.time.Duration;
+import java.util.Arrays;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.*;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.*;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.*;
 import static org.mockito.BDDMockito.*;
@@ -29,7 +28,6 @@ import static org.mockito.BDDMockito.*;
 @SpringBootTest(value = {
     "spring.redis.port:6001",
     "janus.wechat.app-id:123",
-    "janus.success-url:/home",
     "janus.logout-request-url:/logout",
     "janus.logout-success-url:/logout/result"
 })
@@ -56,8 +54,8 @@ class WechatOAuthCallbackFilterTest {
         response.setAccessToken("ACCESS_TOKEN");
         response.setExpiresIn(7200);
         response.setOpenid("OPENID");
-        response.setScope("SCOPE");
         response.setRefreshToken("REFRESH_TOKEN");
+        response.setScope("SCOPE");
         given(wechatService.getToken("CODE")).willReturn(response);
         WechatGetUserResponse userResponse = new WechatGetUserResponse();
         userResponse.setCity("CITY");
@@ -68,6 +66,8 @@ class WechatOAuthCallbackFilterTest {
         userResponse.setNickname("NICKNAME");
         userResponse.setSex("1");
         userResponse.setUnionid("o6_bmasdasdsad6_2sgVt7hMZOPfL");
+        userResponse.setPrivilege(Arrays.asList("PRIVILEGE1", "PRIVILEGE2"));
+        userResponse.setCountry("COUNTRY");
         given(wechatService.getUser("ACCESS_TOKEN", "OPENID")).willReturn(userResponse);
 
         mvc.perform(get("/oauth/callback?code=CODE").header("User-Agent", MOCK_UA))
@@ -80,9 +80,12 @@ class WechatOAuthCallbackFilterTest {
                 .nickName("NICKNAME")
                 .source(User.Source.WECHAT)
                 .gender(User.Gender.MALE)
+                .wechatCountry("COUNTRY")
+                .wechatUnionId("o6_bmasdasdsad6_2sgVt7hMZOPfL")
+                .wechatPrivilege(Arrays.asList("PRIVILEGE1", "PRIVILEGE2"))
                 .build(), "ACCESS_TOKEN",
-                "REFRESH_TOKEN", JanusAuthentication.Credentials.WECHAT, Duration.ofSeconds(7200))))
-            .andExpect(redirectedUrl("/home"));
+                "REFRESH_TOKEN", JanusAuthentication.Credentials.WECHAT, Duration.ofSeconds(7200), "SCOPE")))
+            .andExpect(redirectedUrl("/"));
     }
 
     @Test

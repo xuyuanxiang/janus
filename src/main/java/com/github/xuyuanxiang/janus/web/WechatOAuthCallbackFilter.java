@@ -8,7 +8,6 @@ import com.github.xuyuanxiang.janus.model.WechatGetUserResponse;
 import com.github.xuyuanxiang.janus.service.WechatService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.web.authentication.RememberMeServices;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -19,8 +18,8 @@ import java.time.Duration;
 public class WechatOAuthCallbackFilter extends AbstractOAuthCallbackFilter {
     private final WechatService wechatService;
 
-    public WechatOAuthCallbackFilter(JanusProperties properties, RememberMeServices rememberMeServices, WechatService wechatService) {
-        super(properties, rememberMeServices);
+    public WechatOAuthCallbackFilter(JanusProperties properties, WechatService wechatService) {
+        super(properties);
         this.wechatService = wechatService;
     }
 
@@ -29,10 +28,12 @@ public class WechatOAuthCallbackFilter extends AbstractOAuthCallbackFilter {
         String code = request.getParameter("code");
         if (StringUtils.isNotEmpty(code)) {
             WechatGetTokenResponse tokenResponse = wechatService.getToken(code);
-            if (tokenResponse != null && StringUtils.isNotEmpty(tokenResponse.getOpenid()) && StringUtils.isNotEmpty(tokenResponse.getAccessToken())) {
+            if (tokenResponse != null && StringUtils.isNotEmpty(tokenResponse.getOpenid())
+                && StringUtils.isNotEmpty(tokenResponse.getAccessToken())) {
                 WechatGetUserResponse userResponse = wechatService.getUser(tokenResponse.getAccessToken(), tokenResponse.getOpenid());
                 return new JanusAuthentication(User.from(userResponse), tokenResponse.getAccessToken(),
-                    tokenResponse.getRefreshToken(), JanusAuthentication.Credentials.WECHAT, Duration.ofSeconds(tokenResponse.getExpiresIn()));
+                    tokenResponse.getRefreshToken(), JanusAuthentication.Credentials.WECHAT,
+                    Duration.ofSeconds(tokenResponse.getExpiresIn()), tokenResponse.getScope());
             }
         }
         return null;

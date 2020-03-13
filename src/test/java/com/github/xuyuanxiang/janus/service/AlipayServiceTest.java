@@ -5,10 +5,12 @@ import com.github.xuyuanxiang.janus.exception.*;
 import com.github.xuyuanxiang.janus.model.AlipayBaseResponse;
 import com.github.xuyuanxiang.janus.model.AlipayGetTokenResponse;
 import com.github.xuyuanxiang.janus.model.AlipayGetUserResponse;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestClientException;
@@ -21,6 +23,7 @@ import static org.mockito.BDDMockito.*;
 
 class AlipayServiceTest {
     AlipayService alipayService;
+    JanusProperties properties;
     @Mock
     RestTemplate restTemplate;
 
@@ -32,9 +35,25 @@ class AlipayServiceTest {
         alipay.setPrivateKey("MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCXMOfkEypvCyJ5kEhYthqXZL4g6IWedNbJYMFjFkOzEZpEX+lcD0zSfIaBFBYt+yfpv0vYp8YoQdhyaL2v1MYeXzN1t1zlOfkN2N5WUIo3ILOz0hlU0NNR4ckhTQMaQZlWpUXPRI6+qudDWaDg/gT8kw6kre2vaJq48VFdwqsCRVp6VExjg8z+NDT94gwCmwrZu5yx8n6eGkLmNjAkYVgIvblMEnS6eYlpYvsucN2YLBCQf4AtimkSoqL8TcCN03bDj3kI+rHr7LBVL+XhrvKgxovWmmzD4nulk0qyj8fzbQyQO9azv9IrmSUyOHBCi2oXDG76crjFqVSi/atBC4r5AgMBAAECggEATaLSYN6qmozYLh412D/ilb0omJNuEbkjlhL2GyCSsQAn/FZX6Wr94tQI6X1cCk5+51vQ4bb9XSy6rb01MnYLKgtuzFLVA+xqBH9JZH9FChvjy0HmuhPlf5V2h4AZSMFIsSJ7H3yv5B60VHRQ1Vf7TYtiKJQbikgnszJPutq8n5Qb1O93/EfwQmwEYfYYJlZwxTDKPNNJ6wDUclj0ymkfpTBbbheuzmlAfFcNL8+75eIRHPyxsHN9LAUl0w9leb+WLujSnxOkMMbHy1J2mL1oywNmZn2F4l2GQEiKQC2BKFV+WwtteMUaudac60c336gIG8RbJLTrwzNNoS6Q7yHyAQKBgQDeilAfVGDSW+6Gx3OslndIKR+tSzC1zWL573NdRLr1QULf5W/EAzia3fMsL35MZhieSdorS9YTZYsrYwcDAZZgk1asM613OKrubA+CmE4KjYVvuhzV2woiNvz3E5LK0RVqLD9IcmgFPEj/dvF2q6N0YKvIB75r4Qvhd9W8+y54OQKBgQCt7FMZiKMR7IXBlJCSvH0LKj/JqHxH4ZcedkRuewouqya15yvDMVDejsmRV4B0v4d/4nJ/AiWq1z1pjfaFIA7teL9XingZwDwV+6PeYeF8A41Kj44teBcgKPQxjR0Qr3x0bqsiLi8dQB7Dp5q4RMnp7ErzLYWBfq4aXijlXgoowQKBgQDFo9kcufdzW6ovkRuuf8NYFw3G/iw4ijwI9RxkDRJtlpQp/L6SOroe8FdzOorUlyfuDHDyWtu5RkmfMsebZ+GBy9kB/rNkWrOUI+xyc4l73cxQOd46H9qUIHnxhTStY5u9O6bIVLMFU1ERcTVpy23TgbeOYzI+5ROEHsV4nSvcIQKBgDZNaQy52qBIBuMP7avC6g/IWy4tStBuoO5D4s3T4LP9gBKfYMyK40L5tfmJJnRNMJM/MpxxIS2cEnKYfnXGMqL2ZleAxkrT+G6sqNdQHETKHx0+gRe1PRMvdj7aXk7NW8BGpWwAm3k4geJ4vBf4ckp1GlmexuZNlTJqX75thCKBAoGADYSzQ4jGEzdO5ZLityWTDrZZU3XoWlmWNyBSYfQw164toAgnmdn2+t5vdfadEcSr5JXDsIANSX7A+wXWU6sNVvHcVIXIxNw8kt7goXkiDi/0UUx4j58hiFNEtMtI/IRzvHVsLAwbUcYnZr9GwgVZX1U5D+V4vvDYIionlJD7r20=");
         alipay.setPublicKey("MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAy5OlvmyXl6pbQG8e7eNxJd1VB0b0cuZI1giLAjyNeP5Eu8AffsW+nbV+9gI7jppUfWNRbcgqM/Mx1G8NVE6OPr/1wUxTZm9ac/dEKwQSqi6KgfM101XVEo2Q1+PVks6GfdxB4ENTTwryokyn3LFz+cpqrdUXjQISDGRN4d7HEB2VxXP9bezPn6aHS2ADFYW1aIhiILJvdY7G9W8AoHgZ9Yhlfn+yVKi1AGA/c4+wINwkl731d+scC4WFsjdRjgcRxZ2uWTadwlhVRq799Slvd2k+ozHO56Gdd6itjDtFVdqIqWKM3V9PEHdBLbLjCcW0m+equhq7P6bRshjmitjzZwIDAQAB");
         alipay.setSignType(JanusProperties.SignType.RSA2);
-        JanusProperties properties = new JanusProperties();
+        properties = new JanusProperties();
         properties.setAlipay(alipay);
         alipayService = new AlipayService(properties, restTemplate);
+    }
+
+    @Test
+    void realGetToken() {
+        AlipayService alipayService = new AlipayService(properties, new RestTemplateBuilder()
+            .setConnectTimeout(properties.getConnectionTimeout())
+            .setReadTimeout(properties.getReadTimeout())
+            .messageConverters(new JanusJackson2HttpMessageConverter())
+            .build());
+        try {
+            alipayService.getToken("123445", System.currentTimeMillis());
+            fail("AlipayBusinessException should be raised");
+        } catch (AlipayBusinessException ex) {
+
+        }
+
     }
 
     @Test
@@ -97,7 +116,7 @@ class AlipayServiceTest {
             fail("AlipayRequestException should be raised");
         } catch (AlipayRequestException ex) {
             assertEquals(ex.getCode(), AuthenticationExceptionWithCode.ErrorCode.ALIPAY_REQUEST_FAILED);
-            assertEquals(ex.getArgs()[0], cause);
+            assertEquals(ex.getArgs()[0], ExceptionUtils.getRootCause(cause));
         }
     }
 

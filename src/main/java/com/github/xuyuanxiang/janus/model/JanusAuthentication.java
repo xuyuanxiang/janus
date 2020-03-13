@@ -18,26 +18,33 @@ public class JanusAuthentication extends AbstractAuthenticationToken {
     @Getter
     private final Date ctime = new Date();
     @Getter
-    private final Duration expiresIn;
-    private final Credentials credentials;
+    private final long expiresIn;
+    private final String credentials;
+    @Getter
+    private final String wechatScope;
 
     public JanusAuthentication(User user, String accessToken, String refreshToken, Credentials credentials) {
         this(user, accessToken, refreshToken, credentials, Duration.ofSeconds(3600));
     }
 
     public JanusAuthentication(User user, String accessToken, String refreshToken, Credentials credentials, Duration expiresIn) {
+        this(user, accessToken, refreshToken, credentials, expiresIn, null);
+    }
+
+    public JanusAuthentication(User user, String accessToken, String refreshToken, Credentials credentials, Duration expiresIn, String wechatScope) {
         super(null);
         this.user = user;
         this.accessToken = accessToken;
-        this.credentials = credentials;
+        this.credentials = credentials.name();
         this.refreshToken = refreshToken;
-        this.expiresIn = expiresIn;
+        this.expiresIn = expiresIn.getSeconds();
+        this.wechatScope = wechatScope;
         super.setAuthenticated(true);
     }
 
     @Override
     public Object getCredentials() {
-        return credentials.name();
+        return credentials + ":" + accessToken;
     }
 
     @Override

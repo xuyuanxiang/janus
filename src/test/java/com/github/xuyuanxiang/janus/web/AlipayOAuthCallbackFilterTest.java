@@ -19,7 +19,6 @@ import org.springframework.web.context.WebApplicationContext;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.*;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.*;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.*;
 import static org.mockito.BDDMockito.*;
@@ -28,7 +27,6 @@ import static org.mockito.BDDMockito.*;
 @RunWith(SpringRunner.class)
 @SpringBootTest(value = {
     "spring.redis.port:5001",
-    "janus.success-url:/home",
     "janus.logout-request-url:/logout",
     "janus.logout-success-url:/logout/result"
 })
@@ -78,7 +76,7 @@ class AlipayOAuthCallbackFilterTest {
                 .gender(User.Gender.FEMALE)
                 .build(), "20120823ac6ffaa4d2d84e7384bf983531473993",
                 "30120823ac6ffdsdf2d84e7384bf983531473994", JanusAuthentication.Credentials.ALIPAY)))
-            .andExpect(redirectedUrl("/home"));
+            .andExpect(redirectedUrl("/"));
     }
 
     @Test

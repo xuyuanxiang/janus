@@ -35,12 +35,6 @@ public class JanusProperties {
      */
     private String fallbackUrl = "/401";
     /**
-     * 授权成功后，"强制"用户访问的路由。
-     * 通常无需设置，除非有特殊需求，比如：每次session失效或者未登录时访问应用，在授权成功后必须强制用户访问首页。
-     * 缺省情况下，会保存未授权时用户所访问的路由，在授权成功后继续访问该路由。
-     */
-    private String successUrl;
-    /**
      * 供您的应用内发起【退出登录】操作的请求路径，在需要销毁session时，应到用户跳转到该路由即可。
      */
     private String logoutRequestUrl = "/logout";
@@ -56,16 +50,6 @@ public class JanusProperties {
      * 支付宝/微信 接口响应超时时间，缺省值：30秒。超过该时间接口仍未响应则直接放弃。 通常在首次失败后，会最多再重试3次。
      */
     private Duration readTimeout = Duration.ofSeconds(30);
-    /**
-     * 是否启用Remember Me功能，免授权，直接登录。
-     * 推荐不依赖access_token的业务可以开启该功能。
-     */
-    private boolean enableRememberMe;
-    /**
-     * Remember Me功能保存期限，缺省值：7天。
-     * 即用户首次授权成功后，会在客户端本地保存一个为期7天的安全cookie。此后只要该cookie存在，则直接以此直接登录，创建session。
-     */
-    private Duration rememberMeTTL = Duration.ofDays(7);
 
     @Data
     public static class AlipayConfiguration {

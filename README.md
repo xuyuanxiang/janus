@@ -16,6 +16,7 @@
     - [支付宝授权参数配置](#支付宝授权参数配置)
     - [微信授权参数配置](#微信授权参数配置)
 + [权限配置](#权限配置)
++ [FAQ](#FAQ)
 
 ## 业务规则
 
@@ -64,3 +65,39 @@ session 有效期通常与 access_token 有效期一致，对于只需要 userId
 ## 权限配置
 
 > TODO: example
+
+## FAQ
+
+### 为什么HTTPS在授权登录后总是跳转到HTTP？
+
+常见于Nginx或者一些云服务（比如：阿里云SLB）代理转发的情况。
+
+参考文献：[https://tools.ietf.org/html/rfc7239](https://tools.ietf.org/html/rfc7239)。
+
+```yaml
+Forwarded: proto=https;host=spa.shouqianba.com
+X-Forwarded-Proto: https
+X-Forwarded-Ssl: on
+```
+
+只要有以上请求头之一，spring-security 就"认为"原始请求是一个HTTPS请求。
+
+请确保代理转发时添加了以上请求头之一：
+
+![](doc/slb.png)
+
+然后参照[stackoverflow类似的解决方案](https://stackoverflow.com/questions/51404552/spring-boot-oauth-always-redirecting-to-http-ibm-cloud-cf-spring-boot-2)，注入：
+
+```java
+@Bean
+FilterRegistrationBean<ForwardedHeaderFilter> forwardedHeaderFilter() {
+
+    final FilterRegistrationBean<ForwardedHeaderFilter> filterRegistrationBean = new FilterRegistrationBean<ForwardedHeaderFilter>();
+
+    filterRegistrationBean.setFilter(new ForwardedHeaderFilter());
+    filterRegistrationBean.setOrder(Ordered.HIGHEST_PRECEDENCE);
+
+    return filterRegistrationBean;
+}
+```
+

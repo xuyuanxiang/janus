@@ -6,16 +6,19 @@ import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * 支付宝或微信用户（会员）信息。
+ *
+ * 相同含义的字段名都统一了，微信特有的字段以wechat开头，支付宝独有的字段以alipay开头
  */
 @NoArgsConstructor
 @Data
 public class User implements Serializable {
 
     @Builder
-    public User(String id, Source source, String avatar, String province, String city, String nickName, Gender gender) {
+    public User(String id, Source source, String avatar, String province, String city, String nickName, Gender gender, String wechatUnionId, String wechatCountry, List<String> wechatPrivilege) {
         this.id = id;
         this.source = source;
         this.avatar = avatar;
@@ -23,6 +26,9 @@ public class User implements Serializable {
         this.city = city;
         this.nickName = nickName;
         this.gender = gender.name();
+        this.wechatUnionId = wechatUnionId;
+        this.wechatCountry = wechatCountry;
+        this.wechatPrivilege = wechatPrivilege;
     }
 
     public static User from(WechatGetUserResponse userResponse) {
@@ -33,7 +39,11 @@ public class User implements Serializable {
             .province(userResponse.getProvince())
             .city(userResponse.getCity())
             .nickName(userResponse.getNickname())
-            .gender(Gender.from(userResponse.getSex())).build();
+            .gender(Gender.from(userResponse.getSex()))
+            .wechatCountry(userResponse.getCountry())
+            .wechatPrivilege(userResponse.getPrivilege())
+            .wechatUnionId(userResponse.getUnionid())
+            .build();
     }
 
     public static User from(AlipayGetUserResponse.AlipayUserInfoShareResponse userResponse) {
@@ -58,13 +68,14 @@ public class User implements Serializable {
     private String avatar;
     private String province;
     private String city;
-    private String country;
     private String nickName;
     private String gender;
     /**
-     * 微信公众号授权给某第三方平台，才会有该字段。
+     * 微信特有字段
      */
-    private String unionId;
+    private String wechatUnionId;
+    private String wechatCountry;
+    private List<String> wechatPrivilege;
 
     public enum Source {
         /**

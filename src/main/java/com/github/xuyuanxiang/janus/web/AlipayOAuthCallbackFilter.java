@@ -9,7 +9,6 @@ import com.github.xuyuanxiang.janus.service.AlipayService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.web.authentication.RememberMeServices;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -20,8 +19,8 @@ import java.time.Duration;
 public class AlipayOAuthCallbackFilter extends AbstractOAuthCallbackFilter {
     private final AlipayService alipayService;
 
-    public AlipayOAuthCallbackFilter(JanusProperties properties, RememberMeServices rememberMeServices, AlipayService alipayService) {
-        super(properties, rememberMeServices);
+    public AlipayOAuthCallbackFilter(JanusProperties properties, AlipayService alipayService) {
+        super(properties);
         this.alipayService = alipayService;
     }
 
