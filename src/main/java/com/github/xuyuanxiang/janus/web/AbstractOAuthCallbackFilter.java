@@ -14,6 +14,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
+import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
+import org.springframework.security.web.savedrequest.RequestCache;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
@@ -27,6 +29,7 @@ import java.io.IOException;
 public abstract class AbstractOAuthCallbackFilter extends GenericFilter {
 
     private final RequestMatcher callbackMatcher = new AntPathRequestMatcher(JanusProperties.OAUTH_CALLBACK_URL, "GET");
+    private RequestCache requestCache = new HttpSessionRequestCache();
     protected final JanusProperties properties;
 
     @Setter
@@ -44,10 +47,15 @@ public abstract class AbstractOAuthCallbackFilter extends GenericFilter {
                 Authentication authentication = handleCallback(request, response);
                 if (authentication != null) {
                     handleSuccess(request, response, authentication);
+                } else {
+                    String code = AuthenticationExceptionWithCode.ErrorCode.FORBIDDEN.name();
+                    String message = JanusMessageSource.INSTANCE.getMessage(code, null, request.getLocale());
+                    WebUtil.sendRedirect(request, response, properties.getDeniedUrl(), code, message);
+                    requestCache.removeRequest(request, response);
                 }
             }
-
         } catch (AuthenticationExceptionWithCode ex) {
+            requestCache.removeRequest(request, response);
             failureHandler.onAuthenticationFailure(request, response, ex);
         } finally {
             if (!response.isCommitted()) {

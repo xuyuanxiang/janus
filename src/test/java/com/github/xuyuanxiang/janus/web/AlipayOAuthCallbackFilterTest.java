@@ -5,14 +5,13 @@ import com.github.xuyuanxiang.janus.model.AlipayGetUserResponse;
 import com.github.xuyuanxiang.janus.model.JanusAuthentication;
 import com.github.xuyuanxiang.janus.model.User;
 import com.github.xuyuanxiang.janus.service.AlipayService;
-import org.junit.Assert;
+import com.github.xuyuanxiang.janus.util.WebUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -74,5 +73,12 @@ class AlipayOAuthCallbackFilterTest {
                 .build(), "20120823ac6ffaa4d2d84e7384bf983531473993",
                 "30120823ac6ffdsdf2d84e7384bf983531473994", JanusAuthentication.Credentials.ALIPAY)))
             .andExpect(redirectedUrl("/"));
+    }
+
+    @Test
+    void rejectionCallback() throws Exception {
+        mvc.perform(get("/oauth/callback").header("User-Agent", MOCK_UA))
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrl("/401?error=FORBIDDEN&error_description=" + WebUtil.encodeUriComponent("您没有权限访问当前页面")));
     }
 }
