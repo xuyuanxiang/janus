@@ -5,8 +5,10 @@ import com.github.xuyuanxiang.janus.service.*;
 import com.github.xuyuanxiang.janus.web.*;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.Ordered;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -14,6 +16,7 @@ import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWrite
 import org.springframework.session.FindByIndexNameSessionRepository;
 import org.springframework.session.security.SpringSessionBackedSessionRegistry;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.filter.ForwardedHeaderFilter;
 
 public class JanusAutoConfiguration extends WebSecurityConfigurerAdapter {
     @Bean
@@ -29,6 +32,16 @@ public class JanusAutoConfiguration extends WebSecurityConfigurerAdapter {
             .setReadTimeout(properties.getReadTimeout())
             .messageConverters(new JanusJackson2HttpMessageConverter())
             .build();
+    }
+
+    @Bean
+    FilterRegistrationBean<ForwardedHeaderFilter> forwardedHeaderFilter() {
+        final FilterRegistrationBean<ForwardedHeaderFilter> filterRegistrationBean = new FilterRegistrationBean<ForwardedHeaderFilter>();
+
+        filterRegistrationBean.setFilter(new ForwardedHeaderFilter());
+        filterRegistrationBean.setOrder(Ordered.HIGHEST_PRECEDENCE);
+
+        return filterRegistrationBean;
     }
 
     @Bean

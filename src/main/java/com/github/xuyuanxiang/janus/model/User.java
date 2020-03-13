@@ -10,8 +10,10 @@ import java.util.List;
 
 /**
  * 支付宝或微信用户（会员）信息。
- *
- * 相同含义的字段名都统一了，微信特有的字段以wechat开头，支付宝独有的字段以alipay开头
+ * <p>
+ * 统一相同含义的字段名
+ * 微信特有的字段以wechat开头
+ * 支付宝独有的字段以alipay开头
  */
 @NoArgsConstructor
 @Data
