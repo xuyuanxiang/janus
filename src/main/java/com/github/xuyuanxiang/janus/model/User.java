@@ -56,7 +56,8 @@ public class User implements Serializable {
             .province(userResponse.getProvince())
             .city(userResponse.getCity())
             .nickName(userResponse.getNickName())
-            .gender(Gender.from(userResponse.getGender())).build();
+            .gender(Gender.from(userResponse.getGender()))
+            .build();
     }
 
     /**

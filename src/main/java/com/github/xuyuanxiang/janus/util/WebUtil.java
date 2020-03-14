@@ -19,12 +19,8 @@ public class WebUtil {
     private static RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
     public static boolean acceptJson(final ServletServerHttpRequest httpRequest) {
-        if (httpRequest.getHeaders() != null &&
-            httpRequest.getHeaders().getAccept() != null) {
-            return httpRequest.getHeaders().getAccept().stream()
-                .anyMatch(it -> !it.isWildcardType() && it.includes(MediaType.APPLICATION_JSON));
-        }
-        return false;
+        return httpRequest.getHeaders().getAccept().stream()
+            .anyMatch(it -> !it.isWildcardType() && it.includes(MediaType.APPLICATION_JSON));
     }
 
     @SneakyThrows

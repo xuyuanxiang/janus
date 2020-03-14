@@ -61,10 +61,6 @@ public class JanusProperties {
          */
         private String privateKey;
         /**
-         * 支付宝证书公钥，开发者从支付宝开放平台下载的（由支付宝生成的）证书公钥。
-         */
-        private String publicKey;
-        /**
          * 加密方式，可选值：RSA，RSA2。 RSA即："SHA1WithRSA"，RSA2即："SHA256WithRSA"。
          */
         private SignType signType;
@@ -81,11 +77,6 @@ public class JanusProperties {
         public String getPrivateKey() {
             Assert.notNull(privateKey, "\"janus.alipay.privateKey\" cannot be null.");
             return privateKey;
-        }
-
-        public String getPublicKey() {
-            Assert.notNull(publicKey, "\"janus.alipay.publicKey\" cannot be null.");
-            return publicKey;
         }
 
         public SignType getSignType() {

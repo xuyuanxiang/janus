@@ -149,7 +149,6 @@ janus:
     app-id: # 必填
     sign-type: # 必填
     private-key: # 必填
-    public-key: # 必填
     time-zone: Asia/Shanghai
   wechat:
     appid: # 必填

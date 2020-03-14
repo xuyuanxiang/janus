@@ -1,6 +1,5 @@
 package com.github.xuyuanxiang.janus.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,7 +12,6 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 public class AlipayGetTokenResponse extends AlipayBaseResponse {
     private AlipaySystemOauthTokenResponse alipaySystemOauthTokenResponse;
 
-    @JsonIgnore
     public boolean isSuccess() {
         return alipaySystemOauthTokenResponse != null
             && StringUtils.isNotEmpty(alipaySystemOauthTokenResponse.getUserId());
