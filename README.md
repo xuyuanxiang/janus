@@ -173,7 +173,18 @@ janus:
 
 ### 使用 Redis 存储 session
 
-第一步，添加spring依赖：
+第一步，添加spring依赖;
+
+Gradle:
+
+```groovy
+dependencies {
+    implementation "org.springframework.boot:spring-boot-starter-data-redis"
+    implementation "org.springframework.session:spring-session-data-redis"
+}
+```
+
+Maven:
 
 ```xml
 <dependencies>
