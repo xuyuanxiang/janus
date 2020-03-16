@@ -9,24 +9,9 @@
 [![spring-security](https://img.shields.io/badge/Spring%20Security-5.2.2.RELEASE-brightgreen.svg)](https://docs.spring.io/spring-security/site/docs/5.2.2.RELEASE/reference/html5) 
 [![spring-session](https://img.shields.io/badge/Spring%20Session-2.2.1.RELEASE-brightgreen.svg)](https://docs.spring.io/spring-session/docs/2.2.1.RELEASE/reference/html/) 
 
-聚合用户网页授权（OAuth）登录客户端。
+聚合支付宝、微信用户网页授权（OAuth）登录客户端。
 
 自动装配，只需配置简单的中间件和授权参数即可。
-
-已完成:
-
-- 支付宝
-- 微信
-
-开发中:
-
-- 钉钉
-
-筹备中:
-
-- QQ
-- 百度
-- 京东
 
 _下文提及的"宿主项目"一律指代：安装了 janus-server-sdk 的 spring-boot 工程。_
 
@@ -53,7 +38,6 @@ _下文提及的"宿主项目"一律指代：安装了 janus-server-sdk 的 spri
 
 - [支付宝用户网页授权](https://docs.open.alipay.com/53/104114)
 - [微信用户网页授权](https://mp.weixin.qq.com/wiki?action=doc&id=mp1421140842&t=0.888455262701805)
-- [百度用户网页授权](https://developer.baidu.com/wiki/index.php?title=%E5%B8%AE%E5%8A%A9%E6%96%87%E6%A1%A3%E9%A6%96%E9%A1%B5/web%E5%BA%94%E7%94%A8%E6%8E%A5%E5%85%A5)
 
 ### 流程图
 
