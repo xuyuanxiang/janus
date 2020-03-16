@@ -30,7 +30,7 @@ _下文提及的"宿主项目"一律指代：安装了 janus-server-sdk 的 spri
 
 ### 时序图
 
-![](doc/sequence.svg)
+![](http://xuyuanxiang.me/sequence_e49431f8.svg)
 
 参考资料：
 
@@ -41,7 +41,7 @@ _下文提及的"宿主项目"一律指代：安装了 janus-server-sdk 的 spri
 
 内部处理逻辑：
 
-![](doc/flow.svg)
+![](http://xuyuanxiang.me/flow_838788c3.svg)
 
 #### 异常类型
 
@@ -167,7 +167,7 @@ janus:
 
 安装依赖后在`application.yml`文件中键入：`janus`前缀通过IDE浮窗快速查看属性定义：
 
-![](/doc/floating.png)
+![](http://xuyuanxiang.me/floating_066ed885.png)
 
 或者查看源码注释：[JanusProperties.java](src/main/java/com/github/xuyuanxiang/janus/JanusProperties.java)。
 
@@ -481,7 +481,7 @@ spring-security 就"认为"原始请求是一个 HTTPS 请求，参考文献：[
 
 阿里云 SLB 勾选红箭头所示选项：
 
-![](doc/slb.png)
+![](http://xuyuanxiang.me/slb_bf5a86a9.png)
 
 Nginx：
 
