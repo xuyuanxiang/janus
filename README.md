@@ -148,13 +148,13 @@ Janus所有参数示例：
 ```yaml
 janus:
   alipay:
-    enabled: true
+    enabled: false
     app-id: # 当janus.alipay.enabled值为true时，必填
     sign-type: # 当janus.alipay.enabled值为true时，必填
     private-key: # 当janus.alipay.enabled值为true时，必填
     time-zone: Asia/Shanghai
   wechat:
-    enabled: true
+    enabled: false
     appid: # 当janus.wechat.enabled值为true时，必填
     secret: # 当janus.wechat.enabled值为true时，必填
   fallback-url: /401
@@ -165,6 +165,8 @@ janus:
   read-timeout: 30s
   connection-timeout: 2s
 ```
+
+*没有特别注释的均为选填参数，上面填入的为缺省值，等价于不填。*
 
 安装依赖后在`application.yml`文件中键入：`janus`前缀通过IDE浮窗快速查看属性定义：
 
@@ -499,6 +501,8 @@ server {
 ```
 
 # Janus
+
+> 专注于登录/退出。
 
 ## janus-server-sdk
 
