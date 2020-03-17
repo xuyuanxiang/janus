@@ -1,4 +1,8 @@
-# [](https://github.com/xuyuanxiang/janus-server-sdk/compare/v1.0.0...v) (2020-03-17)
+# [](https://github.com/xuyuanxiang/janus-server-sdk/compare/v1.0.1...v) (2020-03-17)
+
+
+
+## [1.0.1](https://github.com/xuyuanxiang/janus-server-sdk/compare/v1.0.0...v1.0.1) (2020-03-17)
 
 
 ### Bug Fixes
