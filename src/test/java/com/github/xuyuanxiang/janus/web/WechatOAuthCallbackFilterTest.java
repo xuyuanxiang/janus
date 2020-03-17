@@ -26,7 +26,9 @@ import static org.mockito.BDDMockito.*;
 
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@SpringBootTest(value = {
+    "janus.wechat.enabled:true",
+})
 class WechatOAuthCallbackFilterTest {
     public final static String MOCK_UA = "Mozilla/5.0 (iPhone; CPU iPhone OS 9_3_2 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Mobile/13F69 MicroMessenger/7.0.8(0x17000820) NetType/4G Language/zh_CN miniProgram";
     @Autowired
