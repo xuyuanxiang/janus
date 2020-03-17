@@ -13,7 +13,7 @@
 
 自动装配，只需配置简单的中间件和授权参数即可。
 
-_下文提及的"宿主项目"一律指代：安装了 janus-server-sdk 的 spring-boot 工程。_
+**下文提及的"宿主项目"一律指代：安装了 janus-server-sdk 的 spring-boot 工程。**
 
 ## 目录
 
