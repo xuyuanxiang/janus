@@ -32,6 +32,8 @@ import static org.mockito.BDDMockito.*;
 @RunWith(SpringRunner.class)
 @SpringBootTest(value = {
     "spring.redis.port:2001",
+    "janus.alipay.enabled:true",
+    "janus.wechat.enabled:true",
 })
 class AbstractOAuthCallbackFilterTest {
 
@@ -42,6 +44,7 @@ class AbstractOAuthCallbackFilterTest {
     AlipayService alipayService;
     @MockBean
     WechatService wechatService;
+
     @BeforeEach
     void setup() {
         mvc = MockMvcBuilders

@@ -33,12 +33,14 @@ public class JanusEntryPoint implements AuthenticationEntryPoint {
             String description = JanusMessageSource.INSTANCE.getMessage(code, null, httpServletRequest.getLocale());
             WebUtil.renderJSON(httpServletResponse, HttpStatus.UNAUTHORIZED, code, description);
         } else {
-            if (UserAgentRequestMatcher.alipay.matches(httpServletRequest)) {
+            if (properties.getAlipay().isEnabled() && UserAgentRequestMatcher.alipay.matches(httpServletRequest)) {
                 requestCache.saveRequest(httpServletRequest, httpServletResponse);
-                WebUtil.sendRedirect(httpServletRequest, httpServletResponse, buildRedirectUri(httpServletRequest, JanusProperties.ALIPAY_AUTH_URL, properties.getAlipay().getAppId()));
-            } else if (UserAgentRequestMatcher.wechat.matches(httpServletRequest)) {
+                WebUtil.sendRedirect(httpServletRequest, httpServletResponse,
+                    buildRedirectUri(httpServletRequest, JanusProperties.ALIPAY_AUTH_URL, properties.getAlipay().getAppId()));
+            } else if (properties.getWechat().isEnabled() && UserAgentRequestMatcher.wechat.matches(httpServletRequest)) {
                 requestCache.saveRequest(httpServletRequest, httpServletResponse);
-                WebUtil.sendRedirect(httpServletRequest, httpServletResponse, buildRedirectUri(httpServletRequest, JanusProperties.WECHAT_AUTH_URL, properties.getWechat().getAppid()));
+                WebUtil.sendRedirect(httpServletRequest, httpServletResponse,
+                    buildRedirectUri(httpServletRequest, JanusProperties.WECHAT_AUTH_URL, properties.getWechat().getAppid()));
             } else {
                 String code = AuthenticationExceptionWithCode.ErrorCode.UNAUTHORIZED.name();
                 String message = JanusMessageSource.INSTANCE.getMessage(code, null, httpServletRequest.getLocale());

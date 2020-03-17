@@ -26,7 +26,9 @@ import static org.mockito.BDDMockito.*;
 
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@SpringBootTest(value = {
+    "janus.alipay.enabled:true",
+})
 class AlipayOAuthCallbackFilterTest {
     public static final String MOCK_UA = "Mozilla/5.0 (iPhone; CPU iPhone OS 13_1_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/17A878 ChannelId(3) NebulaSDK/1.8.100112 Nebula WK PSDType(1) AlipayDefined(nt:WIFI,ws:414|832|2.0) AliApp(AP/10.1.80.6060) AlipayClient/10.1.80.6060 Alipay Language/zh-Hans Region/CN";
     @MockBean

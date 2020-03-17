@@ -20,6 +20,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(value = {
     "spring.redis.port:4001",
     "janus.alipay.app-id:2018060660309824",
+    "janus.alipay.enabled:true",
+    "janus.wechat.enabled:true",
     "janus.wechat.appid:wx520c15f417810387",
     "janus.fallback-url:/401",
 })

@@ -94,11 +94,17 @@ public class JanusAutoConfiguration extends WebSecurityConfigurerAdapter {
             .logout()
             .logoutUrl(properties.getLogoutRequestUrl())
             .logoutSuccessHandler(new JanusLogoutSuccessHandler(properties))
-            .and()
-            .addFilterBefore(new WechatOAuthCallbackFilter(properties, wechatService),
-                UsernamePasswordAuthenticationFilter.class)
-            .addFilterBefore(new AlipayOAuthCallbackFilter(properties, alipayService), WechatOAuthCallbackFilter.class)
         ;
+
+        if (properties.getWechat().isEnabled()) {
+            http.addFilterBefore(new WechatOAuthCallbackFilter(properties, wechatService),
+                UsernamePasswordAuthenticationFilter.class);
+        }
+
+        if (properties.getAlipay().isEnabled()) {
+            http.addFilterBefore(new AlipayOAuthCallbackFilter(properties, alipayService),
+                UsernamePasswordAuthenticationFilter.class);
+        }
 
         try {
             CustomAuthorizationConfiguration customAuthorizationConfiguration = getApplicationContext().getBean(CustomAuthorizationConfiguration.class);

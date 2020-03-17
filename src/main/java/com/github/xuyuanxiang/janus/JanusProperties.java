@@ -14,11 +14,11 @@ public class JanusProperties {
     public static final String OAUTH_CALLBACK_URL = "/oauth/callback";
 
     /**
-     * 支付宝授权参数
+     * 支付宝应用授权参数
      */
     private AlipayConfiguration alipay;
     /**
-     * 微信授权参数
+     * 微信公众号授权参数
      */
     private WechatConfiguration wechat;
     /**
@@ -52,6 +52,10 @@ public class JanusProperties {
 
     @Data
     public static class AlipayConfiguration {
+        /**
+         * 是否启用支付宝应用授权
+         */
+        private boolean enabled;
         /**
          * 支付宝应用ID。
          */
@@ -98,6 +102,10 @@ public class JanusProperties {
 
     @Data
     public static class WechatConfiguration {
+        /**
+         * 是否启用微信公众号授权
+         */
+        private boolean enabled;
         /**
          * 微信公众号 appid
          */
