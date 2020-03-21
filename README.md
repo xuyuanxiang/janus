@@ -13,7 +13,7 @@
 
 自动装配，只需配置简单的中间件和授权参数即可。
 
-_下文提及的"宿主项目"一律指代：安装了 janus-server-sdk 的 spring-boot 工程。_
+**下文提及的"宿主项目"一律指代：安装了 janus-server-sdk 的 spring-boot 工程。**
 
 ## 目录
 
@@ -148,13 +148,15 @@ Janus所有参数示例：
 ```yaml
 janus:
   alipay:
-    app-id: # 必填
-    sign-type: # 必填
-    private-key: # 必填
+    enabled: false
+    app-id: # 当janus.alipay.enabled值为true时，必填
+    sign-type: # 当janus.alipay.enabled值为true时，必填
+    private-key: # 当janus.alipay.enabled值为true时，必填
     time-zone: Asia/Shanghai
   wechat:
-    appid: # 必填
-    secret: # 必填
+    enabled: false
+    appid: # 当janus.wechat.enabled值为true时，必填
+    secret: # 当janus.wechat.enabled值为true时，必填
   fallback-url: /401
   denied-url: /403
   failure-url: /500
@@ -164,8 +166,7 @@ janus:
   connection-timeout: 2s
 ```
 
-+ 带注释的是必填参数；
-+ 已填的是可选参数，不填的情况下等价于上面的缺省值。
+*没有特别注释的均为选填参数，上面填入的为缺省值，等价于不填。*
 
 安装依赖后在`application.yml`文件中键入：`janus`前缀通过IDE浮窗快速查看属性定义：
 
@@ -507,6 +508,8 @@ server {
 ```
 
 # Janus
+
+> 专注于登录/退出。
 
 ## janus-server-sdk
 

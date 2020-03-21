@@ -1,4 +1,14 @@
-# [](https://github.com/xuyuanxiang/janus-server-sdk/compare/v1.0.0...v) (2020-03-13)
+# [](https://github.com/xuyuanxiang/janus-server-sdk/compare/v1.0.1...v) (2020-03-17)
+
+
+
+## [1.0.1](https://github.com/xuyuanxiang/janus-server-sdk/compare/v1.0.0...v1.0.1) (2020-03-17)
+
+
+### Bug Fixes
+
+* 修复requestMatcher ([3c5f216](https://github.com/xuyuanxiang/janus-server-sdk/commit/3c5f216f90a187b2a1a7d2f2eee4e1d17954329f))
+* 支付宝应用和微信公众号授权参数改为可选 ([2b20bf7](https://github.com/xuyuanxiang/janus-server-sdk/commit/2b20bf7d73a3336fbe379e7ceb76fd7b25b252a6))
 
 
 
