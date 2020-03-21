@@ -48,8 +48,8 @@ _下文提及的"宿主项目"一律指代：安装了 janus-server-sdk 的 spri
 #### 异常类型
 
 + 系统异常：
-    - 请求失败：请求未能打到支付宝/微信网关，可能是：连接超时、DSN解析异常、网络故障...
-    - 响应错误：支付宝/微信接口返回非2xx HTTP状态、接口响应超时
+    - 请求失败：请求未能打到支付宝/微信网关，可能是：连接超时、DSN解析异常、网络故障、或者网关接口响应超时...
+    - 响应错误：支付宝/微信接口返回非2xx HTTP状态码
     - 未知异常：支付宝/微信接口异常，未按文档约定返回正确的HTTP报文
     - 内部错误：中间件不可用
 + 业务异常：
@@ -355,7 +355,7 @@ janus-server-sdk 一旦在`/oauth/callback`请求路径中接收到 auth_code（
 
 #### 系统异常
 
-系统异常，会携带错误描述信息引导用户跳转到`janus.failure-url`所配置的路由，缺省值：`/500`。
+**janus-server-sdk 会在系统异常首次发生后，递增间隔时间最多再重试 3 次，全都失败，会携带错误描述信息引导用户跳转到`janus.failure-url`所配置的路由，缺省值：`/500`。
 
 可在`application.yml`自定义其他值：
 
@@ -368,21 +368,14 @@ _宿主项目可在该请求路径下，响应一个对用户友好的 HTML 错�
 
 系统异常细分下列 4 种情况:
 
-1. 请求失败——请求没有打到支付宝或者微信 API 网关，连接超时，DNS 解析异常... ：
+1. 请求失败——请求未能打到支付宝/微信网关，可能是：连接超时、DSN解析异常、网络故障、或者网关接口响应超时...：
 
 ```yaml
 HTTP/1.1 302 Redirectiton
 Location: ${janus.failure-url}?error=WECHAT_REQUEST_FAILED&error_description=${encodeURIComponent(微信请求失败，请检查网络连接情况。异常：${0})}
 ```
 
-_error_description 参数占位符`${0}`为具体的异常，比如：`java.net.SocketTimeoutException: balabla`。_
-
-2. 响应错误——支付宝或者微信 API 网关响应**非 2xx**HTTP 状态码，或者接口响应超时：
-
-```yaml
-HTTP/1.1 302 Redirectiton
-Location: ${janus.failure-url}?error=ALIPAY_RESPONSE_ERROR&error_description=${encodeURIComponent(支付宝网关不可用，请稍后重试或联系支付宝客服。响应报文：${0})}
-```
+_error_description 参数占位符`${0}`会替换为具体的异常，比如：`微信请求失败，请检查网络连接情况。异常：java.net.SocketTimeoutException: connect timed out`。_
 
 可在`application.yml`中配置请求和响应超时阈值：
 
@@ -392,7 +385,16 @@ janus:
   read-timeout: 1m # 响应超时阈值：1分钟
 ```
 
-3. 未知错误——支付宝或者微信响应 HTTP 200，但是报文类型不对，或者报文非 JSON 格式：
+2. 响应错误——支付宝/微信接口返回非2xx HTTP状态码：
+
+```yaml
+HTTP/1.1 302 Redirectiton
+Location: ${janus.failure-url}?error=ALIPAY_RESPONSE_ERROR&error_description=${encodeURIComponent(支付宝网关不可用，请稍后重试或联系支付宝客服。响应报文：${0})}
+```
+
+_error_description 参数占位符`${0}`会替换为具体响应报文，比如：`支付宝网关不可用，请稍后重试或联系支付宝客服。响应报文：<503 SERVICE_UNAVAILABLE Service Unavailable,[]>`。_
+
+3. 未知异常——支付宝/微信接口异常，未按文档约定返回正确的HTTP报文：
 
 ```yaml
 HTTP/1.1 302 Redirectiton
@@ -404,9 +406,14 @@ Location: ${janus.failure-url}?error=WECHAT_UNKNOWN_ERROR&error_description=${en
 - 支付宝接口应该响应`Content-Type: text/html;Charset=UTF-8`，报文数据为 JSON 格式。
 - 微信接口应该响`Content-Type: text/plain`，报文数据为 JSON 格式。
 
-4. 内部错误——中间件（比如：redis）不可用
+4. 内部错误——中间件（比如：redis）不可用：
 
-**janus-server-sdk 会在系统错误首次发生后，递增间隔时间最多再重试 3 次，全都失败才会引导用户返回`janus.failure-url`页面。**
+```yaml
+HTTP/1.1 302 Redirectiton
+Location: ${janus.failure-url}?error=INTERNAL_SERVER_ERROR&error_description=${encodeURIComponent(系统错误：${0})}
+```
+
+_error_description 参数占位符`${0}`会替换为具体的异常，比如：`系统错误：redis.clients.jedis.exceptions.JedisConnectionException: Could not get a resource from the pool`。_
 
 #### 业务异常
 
